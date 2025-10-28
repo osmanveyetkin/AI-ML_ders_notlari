@@ -4,3 +4,6 @@ Yapay Zeka ve Makine Öğrenmesi Ders İçeriklerine öğrencilerin erişmesi i�
 Osman Yetkin tarafından işlenen konuların bulunduğu derslerde ;PDF'lerden müfredat dışındada konu hakkında daha derin bilgiler, Web sayfalarından konu hakkında ders bilgilerine erişebilirsiniz.
 
 
+GitHub üzerinden daha önce repo indirmemiş arkadaşlar için. Sayfaya geldiğinizde karşınıza çıkan <>Code butonuna tıklayın ardından "Download ZIP" diyerek indirebilirsiniz.
+
+
