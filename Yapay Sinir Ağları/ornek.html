@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YSA ile XOR Problemi Simülatörü</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            /* 1:1 Aspect Ratio */
+        }
+
+        .chart-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <h1 class="text-2xl font-bold text-indigo-600">YSA Simülatörü: XOR Problemi</h1>
+            <nav class="mt-2 flex flex-wrap items-center gap-4">
+                <a href="baslangic.html" class="text-slate-600 hover:text-indigo-600 transition-colors">Ana Sayfa</a>
+                <a href="tanımlar.html" class="text-slate-600 hover:text-indigo-600 transition-colors">Tanımlar</a>
+                <a href="genelyapi.html" class="text-slate-600 hover:text-indigo-600 transition-colors">Genel Yapı</a>
+            </nav>
+            <p class="mt-1">
+                <a href="#dashboard" class="text-sm font-medium text-gray-600 hover:text-indigo-600">Eğitim Paneline Git</a>
+            </p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-10">
+
+        <section id="intro" class="mb-12">
+            <h2 class="text-3xl font-bold mb-4 text-gray-900">Python Kodundan İnteraktif Görselleştirmeye</h2>
+            <p class="text-lg text-gray-600">
+                Bu uygulama, Numpy kullanarak yazılmış bir yapay sinir ağının XOR problemini nasıl çözdüğünü adım adım
+                görselleştirmek adına oluştrdım , Aşağıdaki panelde, ağın eğitim sürecini kontrol edebiliriz hatanın
+                (kaybın) nasıl düştüğünü izleyebilir ve en önemlisi, ağın girdileri sınıflandırmak için oluşturduğu
+                <span class="font-semibold text-indigo-600">karar sınırının</span> nasıl evrildiğini canlı olarak
+                görebilirsiniz. Birlikte inceleyelim
+            </p>
+        </section>
+        <section id="xor-real-life" class="mt-12">
+            <h3 class="text-2xl font-semibold mb-6 text-center text-gray-900">XOR Gerçek Hayat Örnekleri (Kısaca)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Işık Anahtarları -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">Işık Anahtarları (Çapraz Anahtar)</h4>
+                    <p class="text-gray-700 text-sm">İki farklı anahtar aynı lambayı kontrol ediyor. <span class="font-semibold">Yalnızca biri açıkken</span> lamba yanar; ikisi de aynı durumdaysa (ikisi açık/ikisi kapalı) lamba sönük kalır. Bu tam olarak <span class="font-semibold">XOR: farklıysa 1</span> mantığıdır.</p>
+                </div>
+
+                <!-- Güvenlik / Şifreleme -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">Güvenlik ve Şifreleme</h4>
+                    <p class="text-gray-700 text-sm">Basit akış şifrelerinde her bit <code class="font-mono">şifreli = açık ⊕ anahtar</code> şeklinde XOR’lanır. Aynı işlem tekrar uygulandığında mesaj geri çıkar: <code class="font-mono">açık = şifreli ⊕ anahtar</code>.</p>
+                </div>
+
+                <!-- Depolama / RAID Parity -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">Depolama (RAID Parite)</h4>
+                    <p class="text-gray-700 text-sm">Bir disk bozulduğunda kalan blokların XOR’ı alınarak eksik veri geri elde edilir. Parite bloğu = diğer blokların <span class="font-mono">XOR</span>’ı.</p>
+                </div>
+
+                <!-- Sensör/Alarm Fark Tespiti -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">Fark Tespiti (Sensör/Alarm)</h4>
+                    <p class="text-gray-700 text-sm">İki sensörden yalnızca biri tetiklenirse uyarı ver. Aynı anda ikisi tetiklenirse veya ikisi de kapalıysa uyarma. Bu kural XOR mantığına denk gelir.</p>
+                </div>
+
+                <!-- Yazılımda Pratikler -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">Yazılımda Pratik Kullanımlar</h4>
+                    <ul class="list-disc list-inside text-gray-700 text-sm space-y-1">
+                        <li>Bayrak aç/kapat: <code class="font-mono">flags ^= MASK</code></li>
+                        <li>Tek kalan elemanı bul: tüm elemanları XOR’la, çiftler sıfırlanır.</li>
+                        <li>Bitmap farkı: iki resmin farklı piksellerini hızlıca bul.</li>
+                    </ul>
+                </div>
+
+                <!-- Neden ML’de meşhur? -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h4 class="text-lg font-bold mb-2">ML’de Neden Meşhur?</h4>
+                    <p class="text-gray-700 text-sm">XOR, tek çizgiyle ayrılamaz; bu yüzden tek katmanlı perceptronla çözülemez. <span class="font-semibold">En az iki katman</span> gerekir. Bu dersin ana örneği budur.</p>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <h4 class="text-lg font-bold mb-3">Mini Doğruluk Tablosu</h4>
+                <table class="w-full text-center font-mono">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="p-2">x₁</th>
+                            <th class="p-2">x₂</th>
+                            <th class="p-2">x₁ ⊕ x₂</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b"><td class="p-2">0</td><td class="p-2">0</td><td class="p-2">0</td></tr>
+                        <tr class="border-b"><td class="p-2">0</td><td class="p-2">1</td><td class="p-2">1</td></tr>
+                        <tr class="border-b"><td class="p-2">1</td><td class="p-2">0</td><td class="p-2">1</td></tr>
+                        <tr><td class="p-2">1</td><td class="p-2">1</td><td class="p-2">0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="architecture" class="mb-12">
+            <h3 class="text-2xl font-semibold mb-6 text-center text-gray-900">Ağ Mimarisi (2-2-1)</h3>
+            <div
+                class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 flex justify-center items-center space-x-12 sm:space-x-20">
+                <!-- Input Layer -->
+                <div class="flex flex-col items-center space-y-1">
+                    <div class="flex flex-col items-center space-y-8">
+                        <div
+                            class="w-12 h-12 bg-gray-300 border-2 border-gray-400 rounded-full flex items-center justify-center font-mono">
+                            x₁</div>
+                        <div
+                            class="w-12 h-12 bg-gray-300 border-2 border-gray-400 rounded-full flex items-center justify-center font-mono">
+                            x₂</div>
+                    </div>
+                    <p class="mt-4 font-semibold text-gray-600">Giriş Katmanı</p>
+                </div>
+
+                <!-- Hidden Layer -->
+                <div class="flex flex-col items-center space-y-1">
+                    <div class="flex flex-col items-center space-y-8">
+                        <div
+                            class="w-12 h-12 bg-indigo-200 border-2 border-indigo-400 rounded-full flex items-center justify-center font-mono">
+                            a₁</div>
+                        <div
+                            class="w-12 h-12 bg-indigo-200 border-2 border-indigo-400 rounded-full flex items-center justify-center font-mono">
+                            a₂</div>
+                    </div>
+                    <p class="mt-4 font-semibold text-gray-600">Gizli Katman (tanh)</p>
+                </div>
+
+                <!-- Output Layer -->
+                <div class="flex flex-col items-center space-y-1">
+                    <div class="flex flex-col items-center justify-center h-full">
+                        <div
+                            class="w-12 h-12 bg-green-200 border-2 border-green-400 rounded-full flex items-center justify-center font-mono">
+                            ŷ</div>
+                    </div>
+                    <p class="mt-4 font-semibold text-gray-600">Çıkış Katmanı (sigmoid)</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="dashboard" class="scroll-mt-24">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <!-- Controls and Status -->
+                <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h3 class="text-xl font-bold mb-4 border-b pb-3 text-gray-900">Kontrol Paneli</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="learningRate" class="block text-sm font-medium text-gray-700">Öğrenme Oranı
+                                (lr): <span id="lrValue" class="font-mono text-indigo-600">0.1</span></label>
+                            <input type="range" id="learningRate" min="0.01" max="1" step="0.01" value="0.1"
+                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <div>
+                            <label for="trainSpeed" class="block text-sm font-medium text-gray-700">Eğitim Hızı
+                                (Adım/Kare): <span id="speedValue" class="font-mono text-indigo-600">10</span></label>
+                            <input type="range" id="trainSpeed" min="1" max="100" step="1" value="10"
+                                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <button id="resetBtn"
+                                class="w-full bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors">Sıfırla
+                                & Başlat</button>
+                            <button id="stepBtn"
+                                class="w-full bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-600 transition-colors"
+                                disabled>Tek Adım</button>
+                        </div>
+                        <button id="trainBtn"
+                            class="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition-colors"
+                            disabled>Eğitimi Başlat / Durdur</button>
+                    </div>
+
+                    <div class="mt-6 border-t pt-4">
+                        <h4 class="text-lg font-bold mb-2 text-gray-900">Eğitim Durumu</h4>
+                        <div class="font-mono text-sm space-y-1 text-gray-600">
+                            <p>Epoch: <span id="epoch" class="font-bold text-gray-900">0</span></p>
+                            <p>Kayıp (MSE): <span id="loss" class="font-bold text-gray-900">N/A</span></p>
+                            <p class="pt-2">Durum: <span id="status" class="font-semibold text-gray-500">Ağırlıkları
+                                    başlatın.</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualizations -->
+                <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4 text-center text-gray-900">Karar Sınırı</h3>
+                        <div class="chart-container">
+                            <canvas id="decisionBoundaryCanvas" class="chart-canvas rounded-lg"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4 text-center text-gray-900">Kayıp Fonksiyonu (MSE)</h3>
+                        <div class="chart-container">
+                            <canvas id="lossChart" class="chart-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="results" class="mt-12">
+            <h3 class="text-2xl font-semibold mb-6 text-center text-gray-900">Nihai Sonuçlar</h3>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-center font-mono">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="p-3">Girdi (x₁, x₂)</th>
+                                <th class="p-3">Beklenen (y)</th>
+                                <th class="p-3">Tahmin (ŷ)</th>
+                                <th class="p-3">Sonuç</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                            <tr>
+                                <td colspan="4" class="pt-4 text-gray-500">Eğitim tamamlandığında sonuçlar burada
+                                    görünecektir.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const X = [[0, 0, 1, 1], [0, 1, 0, 1]];
+            const y = [[0, 1, 1, 0]];
+            const m = 4;
+
+            let w1, b1, w2, b2;
+            let epoch = 0;
+            let lossHistory = [];
+            let learningRate = 0.1;
+            let isTraining = false;
+            let isInitialized = false;
+            let trainSpeed = 10;
+
+            const epochEl = document.getElementById('epoch');
+            const lossEl = document.getElementById('loss');
+            const statusEl = document.getElementById('status');
+            const lrSlider = document.getElementById('learningRate');
+            const lrValue = document.getElementById('lrValue');
+            const speedSlider = document.getElementById('trainSpeed');
+            const speedValue = document.getElementById('speedValue');
+            const resetBtn = document.getElementById('resetBtn');
+            const stepBtn = document.getElementById('stepBtn');
+            const trainBtn = document.getElementById('trainBtn');
+            const resultsTableBody = document.getElementById('resultsTableBody');
+
+            const lossChartCtx = document.getElementById('lossChart').getContext('2d');
+            const decisionBoundaryCtx = document.getElementById('decisionBoundaryCanvas').getContext('2d');
+
+            let lossChart;
+
+            function initializeLossChart() {
+                if (lossChart) {
+                    lossChart.destroy();
+                }
+                lossChart = new Chart(lossChartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Kayıp (MSE)',
+                            data: [],
+                            borderColor: 'rgb(79, 70, 229)',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 0.5 },
+                            x: { display: false }
+                        },
+                        animation: { duration: 0 }
+                    }
+                });
+            }
+
+            function updateLossChart() {
+                const labels = lossHistory.map((_, i) => i * 10);
+                lossChart.data.labels = labels;
+                lossChart.data.datasets[0].data = lossHistory;
+                lossChart.update();
+            }
+
+            const sigmoid = (z) => 1 / (1 + Math.exp(-z));
+            const tanh = (z) => Math.tanh(z);
+
+            function initializeWeights() {
+                w1 = [[], []]; b1 = [[0], [0]];
+                w2 = [[]]; b2 = [[0]];
+                for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) w1[i][j] = (Math.random() - 0.5);
+                for (let i = 0; i < 1; i++) for (let j = 0; j < 2; j++) w2[i][j] = (Math.random() - 0.5);
+
+                epoch = 0;
+                lossHistory = [];
+                isInitialized = true;
+                statusEl.textContent = 'Eğitime hazır.';
+                statusEl.className = 'font-semibold text-green-600';
+                stepBtn.disabled = false;
+                trainBtn.disabled = false;
+                lossEl.textContent = 'N/A';
+                updateUI();
+                initializeLossChart();
+                drawDecisionBoundary();
+                clearResults();
+            }
+
+            function trainStep() {
+                if (!isInitialized) return;
+
+                let z1 = [[], []], a1 = [[], []];
+                for (let i = 0; i < 2; i++) {
+                    for (let j = 0; j < 4; j++) {
+                        z1[i][j] = w1[i][0] * X[0][j] + w1[i][1] * X[1][j] + b1[i][0];
+                        a1[i][j] = tanh(z1[i][j]);
+                    }
+                }
+
+                let z2 = [[]], a2 = [[]];
+                for (let j = 0; j < 4; j++) {
+                    z2[0][j] = w2[0][0] * a1[0][j] + w2[0][1] * a1[1][j] + b2[0][0];
+                    a2[0][j] = sigmoid(z2[0][j]);
+                }
+
+                let error = [[]];
+                let currentLoss = 0;
+                for (let j = 0; j < 4; j++) {
+                    error[0][j] = a2[0][j] - y[0][j];
+                    currentLoss += error[0][j] ** 2;
+                }
+                currentLoss /= m;
+
+                if (epoch % 10 === 0) lossHistory.push(currentLoss);
+
+                let dz2 = [[]];
+                for (let j = 0; j < 4; j++) {
+                    dz2[0][j] = error[0][j] * a2[0][j] * (1 - a2[0][j]);
+                }
+
+                let dw2 = [[0, 0]], db2 = [[0]];
+                for (let j = 0; j < 4; j++) {
+                    dw2[0][0] += dz2[0][j] * a1[0][j];
+                    dw2[0][1] += dz2[0][j] * a1[1][j];
+                    db2[0][0] += dz2[0][j];
+                }
+                dw2[0][0] /= m; dw2[0][1] /= m; db2[0][0] /= m;
+
+                let dz1 = [[], []];
+                for (let i = 0; i < 2; i++) {
+                    for (let j = 0; j < 4; j++) {
+                        dz1[i][j] = (w2[0][i] * dz2[0][j]) * (1 - a1[i][j] ** 2);
+                    }
+                }
+
+                let dw1 = [[0, 0], [0, 0]], db1 = [[0], [0]];
+                for (let i = 0; i < 2; i++) {
+                    for (let j = 0; j < 4; j++) {
+                        dw1[i][0] += dz1[i][j] * X[0][j];
+                        dw1[i][1] += dz1[i][j] * X[1][j];
+                        db1[i][0] += dz1[i][j];
+                    }
+                }
+                for (let i = 0; i < 2; i++) {
+                    for (let j = 0; j < 2; j++) dw1[i][j] /= m;
+                    db1[i][0] /= m;
+                }
+
+                w1[0][0] -= learningRate * dw1[0][0]; w1[0][1] -= learningRate * dw1[0][1];
+                w1[1][0] -= learningRate * dw1[1][0]; w1[1][1] -= learningRate * dw1[1][1];
+                b1[0][0] -= learningRate * db1[0][0]; b1[1][0] -= learningRate * db1[1][0];
+
+                w2[0][0] -= learningRate * dw2[0][0]; w2[0][1] -= learningRate * dw2[0][1];
+                b2[0][0] -= learningRate * db2[0][0];
+
+                epoch++;
+
+                if (currentLoss < 0.001) {
+                    stopTraining();
+                    statusEl.textContent = 'Eğitim tamamlandı!';
+                    statusEl.className = 'font-semibold text-blue-600';
+                }
+                return currentLoss;
+            }
+
+            function updateUI(currentLoss) {
+                epochEl.textContent = epoch;
+                if (currentLoss) {
+                    lossEl.textContent = currentLoss.toFixed(5);
+                }
+            }
+
+            function predict(x1, x2) {
+                const z1_0 = w1[0][0] * x1 + w1[0][1] * x2 + b1[0][0];
+                const z1_1 = w1[1][0] * x1 + w1[1][1] * x2 + b1[1][0];
+                const a1_0 = tanh(z1_0);
+                const a1_1 = tanh(z1_1);
+                const z2_0 = w2[0][0] * a1_0 + w2[0][1] * a1_1 + b2[0][0];
+                return sigmoid(z2_0);
+            }
+
+            function drawDecisionBoundary() {
+                if (!isInitialized) return;
+                const canvas = decisionBoundaryCtx.canvas;
+                const width = canvas.width;
+                const height = canvas.height;
+                const resolution = 40;
+                const colWidth = width / resolution;
+                const rowHeight = height / resolution;
+
+                for (let i = 0; i < resolution; i++) {
+                    for (let j = 0; j < resolution; j++) {
+                        const x1 = (i / resolution) * 1.5 - 0.25;
+                        const x2 = (j / resolution) * 1.5 - 0.25;
+                        const prediction = predict(x1, x2);
+
+                        const blue = 70 + (229 - 70) * prediction;
+                        const indigo = 79 + (79 - 79) * prediction;
+                        const gray = 243 - (243 - 243) * (1 - prediction);
+
+                        decisionBoundaryCtx.fillStyle = `rgba(${243 - (243 - 79) * prediction}, ${244 - (244 - 70) * prediction}, ${246 - (246 - 229) * prediction}, 1)`;
+                        decisionBoundaryCtx.fillRect(i * colWidth, height - (j + 1) * rowHeight, colWidth, rowHeight);
+                    }
+                }
+
+                const dataPoints = [[0, 0, 0], [0, 1, 1], [1, 0, 1], [1, 1, 0]]; // x1, x2, color
+                dataPoints.forEach(([x1, x2, val]) => {
+                    const canvasX = (x1 + 0.25) / 1.5 * width;
+                    const canvasY = height - ((x2 + 0.25) / 1.5 * height);
+                    decisionBoundaryCtx.beginPath();
+                    decisionBoundaryCtx.arc(canvasX, canvasY, 6, 0, 2 * Math.PI);
+                    decisionBoundaryCtx.fillStyle = val === 0 ? '#ef4444' : '#10b981';
+                    decisionBoundaryCtx.fill();
+                    decisionBoundaryCtx.strokeStyle = 'white';
+                    decisionBoundaryCtx.lineWidth = 2;
+                    decisionBoundaryCtx.stroke();
+                });
+            }
+
+            function handleStep() {
+                const loss = trainStep();
+                updateUI(loss);
+                updateLossChart();
+                drawDecisionBoundary();
+                updateResults();
+            }
+
+            let animationFrameId;
+            function trainingLoop() {
+                if (!isTraining) return;
+                let loss;
+                for (let i = 0; i < trainSpeed; i++) {
+                    loss = trainStep();
+                }
+                updateUI(loss);
+                if (epoch % 50 == 0) { // Update visuals less frequently for performance
+                    updateLossChart();
+                    drawDecisionBoundary();
+                }
+                animationFrameId = requestAnimationFrame(trainingLoop);
+            }
+
+            function startTraining() {
+                isTraining = true;
+                trainBtn.textContent = "Eğitimi Durdur";
+                trainBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                trainBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+                statusEl.textContent = 'Eğitiliyor...';
+                statusEl.className = 'font-semibold text-indigo-600';
+                stepBtn.disabled = true;
+                trainingLoop();
+            }
+
+            function stopTraining() {
+                isTraining = false;
+                cancelAnimationFrame(animationFrameId);
+                trainBtn.textContent = "Eğitimi Başlat";
+                trainBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                trainBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+                if (isInitialized) {
+                    statusEl.textContent = 'Durduruldu.';
+                    statusEl.className = 'font-semibold text-yellow-600';
+                    stepBtn.disabled = false;
+                    updateResults();
+                    drawDecisionBoundary();
+                }
+            }
+
+            function updateResults() {
+                resultsTableBody.innerHTML = '';
+                for (let i = 0; i < m; i++) {
+                    const x1 = X[0][i];
+                    const x2 = X[1][i];
+                    const expected = y[0][i];
+                    const prediction = predict(x1, x2);
+                    const isCorrect = Math.round(prediction) === expected;
+
+                    const row = `
+                    <tr class="border-b">
+                        <td class="p-3">(${x1}, ${x2})</td>
+                        <td class="p-3">${expected}</td>
+                        <td class="p-3">${prediction.toFixed(3)}</td>
+                        <td class="p-3 font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}">
+                            ${isCorrect ? '✓ Doğru' : '✗ Yanlış'}
+                        </td>
+                    </tr>
+                `;
+                    resultsTableBody.innerHTML += row;
+                }
+            }
+
+            function clearResults() {
+                resultsTableBody.innerHTML = '<tr><td colspan="4" class="pt-4 text-gray-500">Eğitim tamamlandığında sonuçlar burada görünecektir.</td></tr>';
+            }
+
+            lrSlider.addEventListener('input', (e) => {
+                learningRate = parseFloat(e.target.value);
+                lrValue.textContent = learningRate.toFixed(2);
+            });
+            speedSlider.addEventListener('input', (e) => {
+                trainSpeed = parseInt(e.target.value, 10);
+                speedValue.textContent = trainSpeed;
+            });
+
+            resetBtn.addEventListener('click', initializeWeights);
+            stepBtn.addEventListener('click', handleStep);
+            trainBtn.addEventListener('click', () => {
+                if (isTraining) {
+                    stopTraining();
+                } else {
+                    startTraining();
+                }
+            });
+
+            initializeLossChart();
+            drawDecisionBoundary();
+        });
+    </script>
+</body>
+
+</html>

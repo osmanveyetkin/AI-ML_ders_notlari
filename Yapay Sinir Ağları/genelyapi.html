@@ -1,0 +1,480 @@
+ <!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yapay Sinir Ağları ve Simülasyonları</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .neuron-diagram-info {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl font-bold text-sky-600">Yapay Sinir Ağları</h1>
+                <div class="hidden sm:flex sm:space-x-8">
+                    <a href="#giris" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Giriş</a>
+                    <a href="#perceptron" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Perceptron</a>
+                    <a href="#simulasyon" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">İnteraktif Simülasyon</a>
+                    <a href="#cok-katmanli" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Çok Katmanlı Ağlar</a>
+                </div>
+                
+            </div>
+             <div class="flex items-center justify-between h-16">
+                <div class="hidden sm:flex sm:space-x-8">
+                   <a href="baslangic.html" class="text-slate-600 hover:text-indigo-600 transition-colors">Ana Sayfa</a>
+                     <a href="tanımlar.html" class="text-slate-600 hover:text-indigo-600 transition-colors">Tanımlar</a>
+                    <a href="ornek.html" class="text-slate-600 hover:text-indigo-600 transition-colors">XOR Simülatörü</a>
+                </div>
+                
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <section id="giris" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">6. Yapay Sinir Ağları ve Simülasyonları</h2>
+            <p class="text-lg text-slate-600 mb-6">
+                Önceki dersimizde insan beyninin işleyişini ve yapay sinir ağlarının temel tiplerini incelemiştik. Bu derste ise bu teorik yapıyı bir adım ileri taşıyarak, en temel sinir ağı birimi olan 'Perceptron'u tanıyacak ve bilgisayar üzerinde basit bir problemin çözümünü nasıl "öğrendiğini" interaktif bir simülasyon ile gözlemleyeceğiz. Amacımız, yapay zekanın öğrenme sürecinin ardındaki temel mantığı anlamaktır.
+            </p>
+        </section>
+
+        <section id="perceptron" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6">Temel Yapı Taşı: Perceptron</h2>
+            <p class="text-lg text-slate-600 mb-8">
+                Perceptron, tek bir yapay nörondur ve yapay sinir ağlarının en temel yapı taşıdır. Tıpkı biyolojik bir nöron gibi girdileri alır, bunları işler ve bir çıktı üretir. Aşağıdaki interaktif diyagramda bir Perceptron'un ana bileşenlerini görebilirsiniz. Açıklamaları görmek için bileşenlerin üzerine gelin.
+            </p>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200 flex flex-col lg:flex-row items-center justify-around gap-8">
+                <div id="neuron-diagram" class="relative flex items-center justify-center w-full max-w-2xl">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-4">
+                            <span class="font-semibold text-slate-700">Girdi 1 (x₁)</span>
+                            <div class="w-16 h-1 bg-slate-300 diagram-line" data-info="girdi"></div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="font-semibold text-slate-700">Girdi 2 (x₂)</span>
+                            <div class="w-16 h-1 bg-slate-300 diagram-line" data-info="girdi"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center mx-4">
+                         <span class="text-sm text-slate-500 mb-1">Ağırlık 1 (w₁)</span>
+                         <span class="text-sm text-slate-500 mt-10">Ağırlık 2 (w₂)</span>
+                    </div>
+
+                    <div class="relative flex items-center">
+                        <div class="absolute w-24 h-1 bg-slate-300 top-1/2 -translate-y-4 -left-12"></div>
+                        <div class="absolute w-24 h-1 bg-slate-300 top-1/2 translate-y-4 -left-12"></div>
+                        <div id="neuron-body" data-info="toplama" class="w-24 h-24 bg-sky-500 rounded-full flex items-center justify-center text-white font-bold text-4xl shadow-md z-10">Σ</div>
+                        <div class="absolute w-8 h-1 bg-slate-300 -top-4 left-1/2 -translate-x-1/2 rotate-90"></div>
+                        <span class="absolute -top-12 left-1/2 -translate-x-1/2 text-sm text-slate-500">Bias (b)</span>
+                    </div>
+                    
+                    <div class="w-16 h-1 bg-slate-300 mx-4 diagram-line" data-info="aktivasyon"></div>
+
+                    <div id="activation-function" data-info="aktivasyon" class="w-24 h-16 bg-emerald-500 rounded-lg flex items-center justify-center text-white font-semibold shadow-md text-center text-sm leading-tight p-2">Aktivasyon Fonksiyonu</div>
+                    
+                    <div class="w-16 h-1 bg-slate-300 mx-4 diagram-line" data-info="cikti"></div>
+                    
+                    <span class="font-semibold text-slate-700" data-info="cikti">Çıktı (y)</span>
+                </div>
+                
+                <div class="w-full lg:w-1/3 p-4 rounded-lg bg-slate-100 border border-slate-200 min-h-[150px]">
+                    <h4 id="diagram-info-title" class="font-bold text-sky-700 text-lg mb-2">Bir Bileşen Seçin</h4>
+                    <p id="diagram-info-text" class="text-slate-600 text-sm">Diyagramdaki bir parçanın üzerine gelerek ne işe yaradığını burada görebilirsiniz.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="simulasyon" class="mb-24 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6">İnteraktif Simülasyon: Perceptron Nasıl Öğrenir?</h2>
+            <p class="text-lg text-slate-600 mb-8">
+                Bu simülasyonda, bir Perceptron'a basit bir "VE" (AND) mantık kapısı problemini çözmeyi öğreteceğiz. Grafik, dört olası giriş noktasını ( (0,0), (0,1), (1,0), (1,1) ) ve Perceptron'un bu noktaları ayıran 'karar sınırını' (mavi çizgi) gösterir. Amaç, Perceptron'un ağırlıklarını ayarlayarak bu çizgiyi doğru konuma getirmesi ve kırmızı (sonuç 0) ile yeşil (sonuç 1) noktaları doğru şekilde ayırmasıdır.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-2 bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <div class="chart-container">
+                        <canvas id="perceptronChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg mb-4">Kontrol Paneli</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="learningRate" class="block text-sm font-medium text-slate-600">Öğrenme Oranı (α):</label>
+                                <input type="range" id="learningRate" min="0.01" max="1" step="0.01" value="0.1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                                <span id="lrValue" class="text-sm text-sky-600 font-mono">0.1</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button id="initializeBtn" class="w-full bg-sky-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-sky-600 transition-colors">Ağırlıkları Başlat</button>
+                                <button id="resetBtn" class="w-full bg-slate-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-slate-600 transition-colors">Sıfırla</button>
+                            </div>
+                            <button id="trainStepBtn" class="w-full bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-600 transition-colors disabled:bg-slate-300 disabled:cursor-not-allowed" disabled>Tek Adım Eğit</button>
+                            <button id="trainAllBtn" class="w-full bg-amber-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-600 transition-colors disabled:bg-slate-300 disabled:cursor-not-allowed" disabled>Hepsini Eğit</button>
+                        </div>
+                    </div>
+                    <div class="mt-6 border-t border-slate-200 pt-4">
+                        <h4 class="font-bold text-slate-800 text-lg mb-2">Durum Bilgisi</h4>
+                        <div class="font-mono text-sm space-y-1 text-slate-700">
+                            <p>Ağırlık 1 (w₁): <span id="weight1" class="font-bold text-sky-700">N/A</span></p>
+                            <p>Ağırlık 2 (w₂): <span id="weight2" class="font-bold text-sky-700">N/A</span></p>
+                            <p>Bias (b): <span id="biasVal" class="font-bold text-sky-700">N/A</span></p>
+                            <p>Adım (Epoch): <span id="epoch" class="font-bold text-slate-900">0</span></p>
+                            <p>Durum: <span id="status" aria-live="polite" class="font-semibold text-emerald-600">Başlamaya hazır.</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cok-katmanli" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6">Gelecek Adım: Çok Katmanlı Ağlar</h2>
+            <p class="text-lg text-slate-600 mb-8">
+                Tek bir Perceptron, yalnızca doğrusal olarak ayrılabilen problemleri (çizgiyle ayrılabilenler gibi) çözebilir. Örneğin, "XOR" (ÖZEL VEYA) problemini tek başına çözemez. Daha karmaşık problemleri çözmek için Perceptron'ları katmanlar halinde birleştiririz. Bu yapılara "Çok Katmanlı Perceptron" (Multi-Layer Perceptron - MLP) denir.
+            </p>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200 flex flex-col items-center">
+                 <h4 class="text-xl font-semibold mb-6 text-slate-800">Basit Bir Çok Katmanlı Ağ Mimarisi</h4>
+                 <div class="flex items-center justify-center gap-8 md:gap-16">
+                    <div class="flex flex-col gap-8">
+                        <div class="w-12 h-12 bg-sky-500 rounded-full flex items-center justify-center text-white font-bold">G₁</div>
+                        <div class="w-12 h-12 bg-sky-500 rounded-full flex items-center justify-center text-white font-bold">G₂</div>
+                    </div>
+                    <div class="text-center">
+                        <p class="font-semibold text-slate-600 -mt-8 mb-2">Giriş Katmanı</p>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                        <div class="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold">N₁</div>
+                        <div class="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold">N₂</div>
+                        <div class="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold">N₃</div>
+                    </div>
+                     <div class="text-center">
+                        <p class="font-semibold text-slate-600 -mt-8 mb-2">Gizli Katman</p>
+                    </div>
+
+                    <div class="flex flex-col gap-8">
+                        <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold">Ç₁</div>
+                    </div>
+                     <div class="text-center">
+                        <p class="font-semibold text-slate-600 -mt-8 mb-2">Çıkış Katmanı</p>
+                    </div>
+                 </div>
+                 <p class="mt-6 text-slate-600 max-w-2xl text-center">
+                    Bu yapıda, giriş katmanından alınan bilgi, bir veya daha fazla 'gizli katman' tarafından işlenir ve son olarak çıkış katmanında sonuç üretilir. Bu katmanlı yapı, ağın çok daha karmaşık desenleri ve ilişkileri öğrenmesini sağlar.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm">
+            <p>&copy; 2025 Yapay Zeka ve Makine Öğrenmesi Dersi Materyali</p>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const diagramInfo = {
+                girdi: {
+                    title: 'Girdiler (Inputs)',
+                    text: 'Bunlar, nöronun karar vermek için kullandığı dış verilerdir. Her girdi, bir özelliğe karşılık gelir (örneğin, bir resimdeki piksel değeri).'
+                },
+                toplama: {
+                    title: 'Toplama ve Ağırlıklandırma',
+                    text: 'Her girdi, bir "ağırlık" (weight) ile çarpılır. Ağırlık, o girdinin ne kadar önemli olduğunu belirtir. Ardından tüm ağırlıklı girdiler ve bir "bias" değeri toplanır.'
+                },
+                aktivasyon: {
+                    title: 'Aktivasyon Fonksiyonu',
+                    text: 'Toplama işleminin sonucu, bu fonksiyona gönderilir. Fonksiyon, toplam değere göre nöronun "ateşlenip ateşlenmeyeceğine" karar verir ve genellikle 0 veya 1 gibi bir çıktı üretir.'
+                },
+                cikti: {
+                    title: 'Çıktı (Output)',
+                    text: 'Aktivasyon fonksiyonundan geçen değer, nöronun nihai çıktısıdır. Bu çıktı, bir sınıflandırma tahmini veya başka bir nörona girdi olabilir.'
+                }
+            };
+            
+            const diagramContainer = document.getElementById('neuron-diagram');
+            const infoTitle = document.getElementById('diagram-info-title');
+            const infoText = document.getElementById('diagram-info-text');
+
+            diagramContainer.addEventListener('mouseover', (e) => {
+                const infoKey = e.target.getAttribute('data-info');
+                if (infoKey && diagramInfo[infoKey]) {
+                    infoTitle.textContent = diagramInfo[infoKey].title;
+                    infoText.textContent = diagramInfo[infoKey].text;
+                }
+            });
+             diagramContainer.addEventListener('mouseout', (e) => {
+                infoTitle.textContent = 'Bir Bileşen Seçin';
+                infoText.textContent = 'Diyagramdaki bir parçanın üzerine gelerek ne işe yaradığını burada görebilirsiniz.';
+            });
+            
+            const ctx = document.getElementById('perceptronChart').getContext('2d');
+            let perceptronChart;
+            let weights = [0, 0];
+            let bias = 0;
+            let learningRate = 0.1;
+            let epoch = 0;
+            let isInitialized = false;
+
+            const data = [
+                { input: [0, 0], output: 0 },
+                { input: [0, 1], output: 0 },
+                { input: [1, 0], output: 0 },
+                { input: [1, 1], output: 1 }
+            ];
+
+            const lrSlider = document.getElementById('learningRate');
+            const lrValue = document.getElementById('lrValue');
+            lrSlider.addEventListener('input', (e) => {
+                learningRate = parseFloat(e.target.value);
+                lrValue.textContent = learningRate.toFixed(2);
+            });
+            
+            const weight1El = document.getElementById('weight1');
+            const weight2El = document.getElementById('weight2');
+            const biasEl = document.getElementById('biasVal');
+            const epochEl = document.getElementById('epoch');
+            const statusEl = document.getElementById('status');
+            const trainStepBtn = document.getElementById('trainStepBtn');
+            const trainAllBtn = document.getElementById('trainAllBtn');
+            const initializeBtn = document.getElementById('initializeBtn');
+            const resetBtn = document.getElementById('resetBtn');
+
+
+            function activation(sum) {
+                return sum >= 0 ? 1 : 0;
+            }
+
+            function predict(inputs) {
+                const sum = inputs[0] * weights[0] + inputs[1] * weights[1] + bias;
+                return activation(sum);
+            }
+
+            function updateUI() {
+                weight1El.textContent = weights[0].toFixed(3);
+                weight2El.textContent = weights[1].toFixed(3);
+                biasEl.textContent = bias.toFixed(3);
+                epochEl.textContent = epoch;
+                drawChart();
+            }
+
+            function checkConvergence() {
+                 let allCorrect = true;
+                data.forEach(d => {
+                    const prediction = predict(d.input);
+                    if (prediction !== d.output) {
+                        allCorrect = false;
+                    }
+                });
+                if (allCorrect) {
+                    statusEl.textContent = 'Öğrenme tamamlandı!';
+                    statusEl.className = 'font-semibold text-emerald-600';
+                    trainStepBtn.disabled = true;
+                    trainAllBtn.disabled = true;
+                    return true;
+                }
+                return false;
+            }
+
+            function trainStep() {
+                if (!isInitialized) return;
+                if (checkConvergence()) return;
+
+                let madeUpdate = false;
+                for(let i = 0; i < data.length; i++) {
+                    const d = data[i];
+                    const prediction = predict(d.input);
+                    const error = d.output - prediction;
+                    if (error !== 0) {
+                        weights[0] += learningRate * error * d.input[0];
+                        weights[1] += learningRate * error * d.input[1];
+                        bias += learningRate * error;
+                        madeUpdate = true;
+                        break; 
+                    }
+                }
+                
+                epoch++;
+                statusEl.textContent = 'Eğitiliyor...';
+                statusEl.className = 'font-semibold text-amber-600';
+                updateUI();
+                checkConvergence();
+            }
+            
+            async function trainAll() {
+                 if (!isInitialized) return;
+                 trainStepBtn.disabled = true;
+                 trainAllBtn.disabled = true;
+
+                 let count = 0;
+                 while(!checkConvergence() && count < 1000) {
+                     trainStep();
+                     await new Promise(r => setTimeout(r, 50));
+                     count++;
+                 }
+                
+                 if(count >= 1000) {
+                     statusEl.textContent = 'Maksimum iterasyona ulaşıldı.';
+                     statusEl.className = 'font-semibold text-red-600';
+                 }
+                 trainStepBtn.disabled = isInitialized ? checkConvergence() : true;
+                 trainAllBtn.disabled = isInitialized ? checkConvergence() : true;
+            }
+
+            function initialize() {
+                weights = [Math.random() * 2 - 1, Math.random() * 2 - 1];
+                bias = Math.random() * 2 - 1;
+                epoch = 0;
+                isInitialized = true;
+                statusEl.textContent = 'Ağırlıklar başlatıldı.';
+                statusEl.className = 'font-semibold text-sky-600';
+                trainStepBtn.disabled = false;
+                trainAllBtn.disabled = false;
+                updateUI();
+            }
+            
+            function reset() {
+                weights = [0, 0];
+                bias = 0;
+                epoch = 0;
+                isInitialized = false;
+                statusEl.textContent = 'Başlamaya hazır.';
+                statusEl.className = 'font-semibold text-emerald-600';
+                weight1El.textContent = 'N/A';
+                weight2El.textContent = 'N/A';
+                biasEl.textContent = 'N/A';
+                epochEl.textContent = '0';
+                trainStepBtn.disabled = true;
+                trainAllBtn.disabled = true;
+                drawChart(true);
+            }
+
+            initializeBtn.addEventListener('click', initialize);
+            resetBtn.addEventListener('click', reset);
+            trainStepBtn.addEventListener('click', trainStep);
+            trainAllBtn.addEventListener('click', trainAll);
+
+            function drawChart(isReset = false) {
+                const datasets = [
+                    {
+                        label: 'Çıktı 0 (Kırmızı)',
+                        data: data.filter(d => d.output === 0).map(d => ({ x: d.input[0], y: d.input[1] })),
+                        backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                        pointRadius: 8,
+                        pointHoverRadius: 10
+                    },
+                    {
+                        label: 'Çıktı 1 (Yeşil)',
+                        data: data.filter(d => d.output === 1).map(d => ({ x: d.input[0], y: d.input[1] })),
+                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                        pointRadius: 8,
+                        pointHoverRadius: 10
+                    }
+                ];
+
+                if (isInitialized && !isReset) {
+                     const lineData = [];
+                     const x1 = -0.5;
+                     const y1 = (-weights[0] * x1 - bias) / (weights[1] || 1e-6);
+                     lineData.push({x: x1, y: y1});
+
+                     const x2 = 1.5;
+                     const y2 = (-weights[0] * x2 - bias) / (weights[1] || 1e-6);
+                     lineData.push({x: x2, y: y2});
+
+                    datasets.push({
+                        label: 'Karar Sınırı',
+                        data: lineData,
+                        borderColor: 'rgba(59, 130, 246, 0.8)',
+                        borderWidth: 3,
+                        type: 'line',
+                        fill: false,
+                        pointRadius: 0
+                    });
+                }
+
+
+                if (perceptronChart) {
+                    perceptronChart.data.datasets = datasets;
+                    perceptronChart.update();
+                } else {
+                    perceptronChart = new Chart(ctx, {
+                        type: 'scatter',
+                        data: { datasets },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    beginAtZero: false,
+                                    min: -0.5,
+                                    max: 1.5,
+                                    grid: {
+                                        color: 'rgba(203, 213, 225, 0.5)'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: false,
+                                    min: -0.5,
+                                    max: 1.5,
+                                    grid: {
+                                        color: 'rgba(203, 213, 225, 0.5)'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            if (context.dataset.label === 'Karar Sınırı') return null;
+                                            return `Giriş: (${context.parsed.x}, ${context.parsed.y})`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            drawChart();
+        });
+    </script>
+</body>
+</html>

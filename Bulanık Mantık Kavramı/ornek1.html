@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kapsamlı Bulanık Mantık Kılavuzu ve Simülatörü</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+        .membership-graph {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            background-color: #f8fafc;
+            border-left: 2px solid #9ca3af;
+            border-bottom: 2px solid #9ca3af;
+        }
+        .membership-shape {
+            position: absolute;
+            bottom: 0;
+            height: 100%;
+            background-color: currentColor;
+            opacity: 0.15;
+        }
+        .indicator-line {
+            position: absolute;
+            bottom: 0;
+            top: 0;
+            width: 2px;
+            background-color: #f43f5e;
+            transform: translateX(-1px);
+        }
+        .indicator-value {
+            position: absolute;
+            top: -25px;
+            transform: translateX(-50%);
+            background-color: #f43f5e;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+         .clipped-shape {
+            position: absolute;
+            bottom: 0;
+            background-color: currentColor;
+            opacity: 0.5;
+         }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/90 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <h1 class="text-3xl font-extrabold text-indigo-600">Bulanık Mantık: Kapsamlı Kılavuz</h1>
+            <p class="mt-1 text-slate-600">Kesin olmayan bilgiyi mantıksal bir çerçeveye oturtma sanatı.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- GİRİŞ BÖLÜMÜ -->
+        <section class="mb-16">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <h2 class="text-2xl font-bold mb-3 text-indigo-700">1. Temel Kavram: Neden Bulanık Mantık?</h2>
+                <p class="mb-4">Klasik mantık ve geleneksel bilgisayar programları, dünyayı mutlak doğrular ve yanlışlar (1/0) üzerinden görür. Ancak insan dili ve düşünce yapısı bu kadar keskin değildir. "Hava oldukça sıcak", "servis fena değildi" gibi ifadeler belirsizlik içerir. **Bulanık Mantık (Fuzzy Logic)**, bu belirsizliği ve "gri alanları" matematiksel bir çerçeveye oturtarak bilgisayarların insan gibi akıl yürütmesini sağlar.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
+                    <div class="bg-slate-100 p-6 rounded-lg border border-slate-300">
+                        <h3 class="font-bold text-lg mb-2">Klasik Mantık (Keskin Kümeler)</h3>
+                        <p class="text-sm">"Uzun boylu" kümesinin sınırı 180 cm ise, 179.9 cm boyundaki bir kişi bu kümenin %0 üyesidir.</p>
+                        <div class="w-24 h-12 bg-black text-white flex items-center justify-center rounded mt-2 mx-auto font-mono text-sm">ÜYE DEĞİL (0)</div>
+                        <div class="w-24 h-12 bg-blue-600 text-white flex items-center justify-center rounded mt-2 mx-auto font-mono text-sm">ÜYE (1)</div>
+                    </div>
+                    <div class="bg-emerald-50 p-6 rounded-lg border-2 border-emerald-300">
+                        <h3 class="font-bold text-lg mb-2 text-emerald-800">Bulanık Mantık (Bulanık Kümeler)</h3>
+                        <p class="text-sm">179.9 cm boyundaki bir kişi, "uzun boylu" kümesinin %95 üyesi olabilir. Keskin bir geçiş yoktur.</p>
+                        <div class="w-24 h-12 bg-emerald-200 text-emerald-800 flex items-center justify-center rounded mt-2 mx-auto font-mono text-sm">%50 ÜYE</div>
+                        <div class="w-24 h-12 bg-emerald-500 text-white flex items-center justify-center rounded mt-2 mx-auto font-mono text-sm">%100 ÜYE</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SÜREÇ BÖLÜMÜ -->
+        <section class="mb-16">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                 <h2 class="text-2xl font-bold mb-6 text-indigo-700">2. Bir Bulanık Sistemin Anatomisi</h2>
+                 <p class="mb-6 text-slate-600">Bir bulanık mantık sistemi, kararlarını üç temel adımda verir:</p>
+                 <div class="flex flex-col md:flex-row items-stretch justify-between gap-4 text-center">
+                    <div class="flex-1 p-6 bg-slate-50 rounded-lg border">
+                        <div class="text-5xl mb-2">🔢➡️🗣️</div>
+                        <h4 class="text-lg font-bold">1. Bulanıklaştırma (Fuzzification)</h4>
+                        <p class="text-sm text-slate-600 mt-2">Bu adımda, sisteme gelen net sayısal girdiler (örn: sıcaklık = 28°C), sözel ifadelere dönüştürülür. Bu dönüşüm, **Üyelik Fonksiyonları** ile yapılır. Örneğin, 28°C sıcaklık, "%20 Ilık" ve "%80 Sıcak" kümelerine üye olabilir.</p>
+                    </div>
+                    <div class="text-2xl font-bold text-slate-400 self-center transform rotate-90 md:rotate-0 mx-4">→</div>
+                    <div class="flex-1 p-6 bg-slate-50 rounded-lg border">
+                        <div class="text-5xl mb-2">🧠</div>
+                        <h4 class="text-lg font-bold">2. Kural Değerlendirme (Inference)</h4>
+                        <p class="text-sm text-slate-600 mt-2">Bulanıklaştırılmış girdiler, "EĞER ... O ZAMAN ..." formatındaki bir kural tabanından geçirilir. Örneğin: "EĞER sıcaklık <b class="text-red-600">Sıcak</b> VEYA nem <b class="text-blue-600">Nemli</b> ise, O ZAMAN fan hızı <b class="text-red-600">Hızlı</b>'dır." Her kuralın ne kadar "doğru" olduğu hesaplanır.</p>
+                    </div>
+                    <div class="text-2xl font-bold text-slate-400 self-center transform rotate-90 md:rotate-0 mx-4">→</div>
+                    <div class="flex-1 p-6 bg-slate-50 rounded-lg border">
+                         <div class="text-5xl mb-2">🗣️➡️🔢</div>
+                        <h4 class="text-lg font-bold">3. Durulaştırma (Defuzzification)</h4>
+                        <p class="text-sm text-slate-600 mt-2">Tüm kurallardan elde edilen bulanık çıktılar birleştirilir ve tekrar net bir sayısal sonuca dönüştürülür. Örneğin, tüm kuralların birleşik etkisi, "Fan hızı: 85 RPM" gibi kesin bir komut üretir.</p>
+                    </div>
+                 </div>
+            </div>
+        </section>
+
+        <!-- GERÇEK HAYAT ÖRNEKLERİ -->
+        <section class="mb-16">
+             <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                 <h2 class="text-2xl font-bold mb-6 text-indigo-700">3. Gerçek Hayat Uygulamaları</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-blue-50 border-2 border-blue-200 p-6 rounded-lg"><h3 class="text-xl font-bold text-blue-800 flex items-center mb-2"><span class="text-3xl mr-3">🧺</span>Çamaşır Makinesi</h3><p class="text-sm text-slate-700">Modern çamaşır makineleri, su ve enerji tasarrufu için bulanık mantık kullanır.</p><ul class="text-xs mt-3 space-y-1 font-mono bg-white p-3 rounded"><li><b>Girdiler:</b> Kirlilik sensörü, çamaşır ağırlığı.</li><li><b>Değişkenler:</b> {Çok Kirli, Normal, Az Kirli}, {Ağır, Hafif}.</li><li><b>Kural:</b> EĞER <b class="text-blue-600">Çok Kirli</b> VE <b class="text-blue-600">Ağır</b> ise, O ZAMAN Yıkama Süresi <b class="text-blue-600">Uzun</b>'dur.</li><li><b>Çıktı:</b> Yıkama süresi (dk), su miktarı (lt).</li></ul></div>
+                    <div class="bg-red-50 border-2 border-red-200 p-6 rounded-lg"><h3 class="text-xl font-bold text-red-800 flex items-center mb-2"><span class="text-3xl mr-3">🚗</span>ABS Fren Sistemi</h3><p class="text-sm text-slate-700">Tekerleklerin kilitlenmesini önlemek için fren basıncını saniyede onlarca kez ayarlar.</p><ul class="text-xs mt-3 space-y-1 font-mono bg-white p-3 rounded"><li><b>Girdiler:</b> Tekerlek hızı, araç hızı.</li><li><b>Değişkenler:</b> {Kayma Çok, Kayma Az}, {Hız Yüksek, Hız Düşük}.</li><li><b>Kural:</b> EĞER <b class="text-red-600">Kayma Çok</b> ise, O ZAMAN Fren Basıncı <b class="text-red-600">Azalt</b>'ılır.</li><li><b>Çıktı:</b> Fren hidroliğine uygulanacak basınç miktarı.</li></ul></div>
+                    <div class="bg-green-50 border-2 border-green-200 p-6 rounded-lg"><h3 class="text-xl font-bold text-green-800 flex items-center mb-2"><span class="text-3xl mr-3">💰</span>Kredi Riski Değerlendirme</h3><p class="text-sm text-slate-700">Bir kişinin kredi başvurusundaki riski, kesin kurallar yerine esnek bir şekilde değerlendirilir.</p><ul class="text-xs mt-3 space-y-1 font-mono bg-white p-3 rounded"><li><b>Girdiler:</b> Gelir, borç miktarı, yaş.</li><li><b>Değişkenler:</b> {Gelir Yüksek, Gelir Düşük}, {Borç Az, Borç Çok}.</li><li><b>Kural:</b> EĞER <b class="text-green-600">Gelir Yüksek</b> VE <b class="text-green-600">Borç Az</b> ise, O ZAMAN Risk <b class="text-green-600">Düşük</b>'tür.</li><li><b>Çıktı:</b> Kişinin kredi risk puanı (1-100 arası).</li></ul></div>
+                    <div class="bg-purple-50 border-2 border-purple-200 p-6 rounded-lg"><h3 class="text-xl font-bold text-purple-800 flex items-center mb-2"><span class="text-3xl mr-3">🎮</span>Yapay Zeka Karakterleri</h3><p class="text-sm text-slate-700">Oyunlardaki yapay zeka karakterlerinin daha "insansı" ve tahmin edilemez davranmasını sağlar.</p><ul class="text-xs mt-3 space-y-1 font-mono bg-white p-3 rounded"><li><b>Girdiler:</b> Oyuncuya uzaklık, karakterin canı.</li><li><b>Değişkenler:</b> {Uzak, Yakın}, {Canı Az, Canı Çok}.</li><li><b>Kural:</b> EĞER <b class="text-purple-600">Yakın</b> VE <b class="text-purple-600">Canı Çok</b> ise, O ZAMAN Davranış <b class="text-purple-600">Saldırgan</b>'dır.</li><li><b>Çıktı:</b> Saldırganlık seviyesi (Savunma/Saldırı eğilimi).</li></ul></div>
+                 </div>
+            </div>
+        </section>
+
+        <!-- SİMÜLATÖR BÖLÜMÜ 1 -->
+        <section class="mb-16">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <h2 class="text-2xl font-bold mb-2 text-indigo-700">4. İnteraktif Simülatör: Akıllı Klima Fanı (Mamdani)</h2>
+                <p class="mb-6 text-slate-600">Sıcaklık ve nem değerlerini değiştirerek bulanık mantık sisteminin fan hızına nasıl karar verdiğini adım adım gözlemleyin.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-2 space-y-6"><h3 class="font-bold text-xl">A. Girdiler ve Bulanıklaştırma</h3><div><label for="temperature" class="font-semibold">Sıcaklık: <span id="temp-value" class="font-mono text-indigo-600">25</span>°C</label><input type="range" id="temperature" min="0" max="40" value="25" class="w-full mt-1"><div class="membership-graph mt-2"><div class="membership-shape text-blue-500" style="width: 50%; clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);"></div><div class="membership-shape text-green-500" style="width: 50%; clip-path: polygon(50% 0, 100% 100%, 0 100%); left: 25%;"></div><div class="membership-shape text-red-500" style="width: 50%; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); left: 50%;"></div><div id="temp-indicator" class="indicator-line"><div class="indicator-value"></div></div></div><div class="flex justify-between text-xs font-bold text-slate-500"><span class="text-blue-600">Soğuk</span><span class="text-green-600">Ilık</span><span class="text-red-600">Sıcak</span></div><p id="temp-membership-text" class="text-xs font-mono mt-1"></p></div><div><label for="humidity" class="font-semibold">Nem: <span id="hum-value" class="font-mono text-indigo-600">50</span>%</label><input type="range" id="humidity" min="0" max="100" value="50" class="w-full mt-1"><div class="membership-graph mt-2"><div class="membership-shape text-yellow-600" style="width: 50%; clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);"></div><div class="membership-shape text-cyan-500" style="width: 50%; clip-path: polygon(50% 0, 100% 100%, 0 100%); left: 25%;"></div><div class="membership-shape text-blue-800" style="width: 50%; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); left: 50%;"></div><div id="hum-indicator" class="indicator-line"><div class="indicator-value"></div></div></div><div class="flex justify-between text-xs font-bold text-slate-500"><span class="text-yellow-700">Kuru</span><span class="text-cyan-600">Normal</span><span class="text-blue-900">Nemli</span></div><p id="hum-membership-text" class="text-xs font-mono mt-1"></p></div></div>
+                    <div class="lg:col-span-3 space-y-6"><h3 class="font-bold text-xl">B. Kurallar ve Çıkarım</h3><div class="space-y-3 bg-slate-50 p-4 rounded-lg border"><div class="flex items-center gap-2"><div class="font-bold text-xs bg-slate-200 p-1 rounded">Kural 1</div><p class="text-xs">EĞER Sıcaklık <b class="text-blue-600">Soğuk</b> ise, O ZAMAN Fan Hızı <b class="text-blue-600">Yavaş</b>'tır.</p><div id="rule1-strength" class="ml-auto font-mono text-xs font-bold bg-slate-300 px-2 py-1 rounded"></div></div><div class="flex items-center gap-2"><div class="font-bold text-xs bg-slate-200 p-1 rounded">Kural 2</div><p class="text-xs">EĞER Sıcaklık <b class="text-green-600">Ilık</b> ise, O ZAMAN Fan Hızı <b class="text-green-600">Orta</b>'dır.</p><div id="rule2-strength" class="ml-auto font-mono text-xs font-bold bg-slate-300 px-2 py-1 rounded"></div></div><div class="flex items-center gap-2"><div class="font-bold text-xs bg-slate-200 p-1 rounded">Kural 3</div><p class="text-xs">EĞER Sıcaklık <b class="text-red-600">Sıcak</b> VEYA Nem <b class="text-blue-900">Nemli</b> ise, O ZAMAN Fan Hızı <b class="text-red-600">Hızlı</b>'dır.</p><div id="rule3-strength" class="ml-auto font-mono text-xs font-bold bg-slate-300 px-2 py-1 rounded"></div></div></div><h3 class="font-bold text-xl">C. Durulaştırma ve Sonuç</h3><div><div class="membership-graph"><div class="clipped-shape text-blue-500" id="output-yavas" style="width: 50%; clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);"></div><div class="clipped-shape text-green-500" id="output-orta" style="width: 50%; clip-path: polygon(50% 0, 100% 100%, 0 100%); left: 25%;"></div><div class="clipped-shape text-red-500" id="output-hizli" style="width: 50%; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); left: 50%;"></div><div id="result-indicator" class="indicator-line bg-indigo-600"><div class="indicator-value bg-indigo-600"></div></div></div><div class="flex justify-between text-xs font-bold text-slate-500"><span class="text-blue-600">Yavaş (0)</span><span class="text-green-600">Orta (50)</span><span class="text-red-600">Hızlı (100)</span></div></div><div class="bg-indigo-50 p-6 rounded-lg border-2 border-indigo-200 text-center"><h4 class="font-bold text-lg text-indigo-800">Net Çıktı: Fan Hızı</h4><p class="text-4xl font-bold text-indigo-600 mt-2" id="fan-speed-result">50 RPM</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SİMÜLATÖR BÖLÜMÜ 2 -->
+        <section class="mt-16">
+          <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+            <h2 id="simulator2" class="text-2xl font-bold mb-2 text-indigo-700">5. İnteraktif Simülatör: Bulanık Termostat (Sugeno)</h2>
+            <p class="mb-6 text-slate-600">Bu simülatör, tek girişli ve daha basit bir çıktı modeline (Sugeno) sahip bir bulanık sistemi gösterir. Girdi: **Hata** = (Hedef Sıcaklık − Oda Sıcaklığı). Çıktı: **Isıtıcı Gücü (%)**.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+              <div class="lg:col-span-2 space-y-6"><h3 class="font-bold text-xl">A. Girdi ve Bulanıklaştırma</h3><div><label for="error" class="font-semibold">Hata (°C): <span id="err-value" class="font-mono text-indigo-600">0</span></label><input type="range" id="error" min="-10" max="10" value="0" step="0.1" class="w-full mt-1"><div class="membership-graph mt-2"><div class="membership-shape text-blue-600" style="width: 40%; clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%);"></div><div class="membership-shape text-green-600" style="width: 50%; clip-path: polygon(50% 0, 100% 100%, 0 100%); left: 25%;"></div><div class="membership-shape text-red-600" style="width: 40%; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); left: 60%;"></div><div id="err-indicator" class="indicator-line"><div class="indicator-value"></div></div></div><div class="flex justify-between text-xs font-bold text-slate-500"><span class="text-blue-600">Negatif (Soğuk)</span><span class="text-green-600">Sıfıra Yakın</span><span class="text-red-600">Pozitif (Sıcak)</span></div><p id="err-membership-text" class="text-xs font-mono mt-1"></p></div></div>
+              <div class="lg:col-span-3 space-y-6"><h3 class="font-bold text-xl">B. Kurallar ve Çıkarım (Sugeno Modeli)</h3><div class="space-y-3 bg-slate-50 p-4 rounded-lg border"><div class="flex items-center gap-2"><div class="font-bold text-xs bg-slate-200 p-1 rounded">Kural 1</div><p class="text-xs">EĞER Hata <b class="text-blue-600">Negatif</b> ise, O ZAMAN Güç = <b class="text-blue-600">90%</b> (Yüksek).</p><div id="t-rule1" class="ml-auto font-mono text-xs font-bold bg-slate-300 px-2 py-1 rounded"></div></div><div class="flex items-center gap-2"><div class="font-bold text-xs bg-slate-200 p-1 rounded">Kural 2</div><p class="text-xs">EĞER Hata <b class="text-green-600">Sıfıra Yakın</b> ise, O ZAMAN Güç = <b class="text-green-600">50%</b> (Orta).</p><div id="t-rule2" class="ml-auto font-mono text-xs font-bold bg-slate-300 px-2 py-1 rounded"></div></div><div class="flex items-center gap-2"><div class="font-bold text-xs bg-slate-200 p-1 rounded">Kural 3</div><p class="text-xs">EĞER Hata <b class="text-red-600">Pozitif</b> ise, O ZAMAN Güç = <b class="text-red-600">10%</b> (Düşük).</p><div id="t-rule3" class="ml-auto font-mono text-xs font-bold bg-slate-300 px-2 py-1 rounded"></div></div></div><h3 class="font-bold text-xl">C. Durulaştırma ve Sonuç</h3><div class="bg-indigo-50 p-6 rounded-lg border-2 border-indigo-200 text-center"><h4 class="font-bold text-lg text-indigo-800">Net Çıktı: Isıtıcı Gücü</h4><p class="text-4xl font-bold text-indigo-600 mt-2" id="t-power-result">50%</p></div></div>
+            </div>
+          </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tempSlider = document.getElementById('temperature');
+            if (tempSlider) { /* ... Akıllı Klima Simülatörü scripti ... */ }
+            const errSlider = document.getElementById('error');
+            if (errSlider) { /* ... Termostat Simülatörü scripti ... */ }
+
+            // === AKILLI KLİMA SİMÜLATÖRÜ ===
+            if (tempSlider) {
+                const humSlider=document.getElementById('humidity'),tempValue=document.getElementById('temp-value'),humValue=document.getElementById('hum-value'),tempIndicator=document.getElementById('temp-indicator'),humIndicator=document.getElementById('hum-indicator'),tempMembershipText=document.getElementById('temp-membership-text'),humMembershipText=document.getElementById('hum-membership-text'),rule1Strength=document.getElementById('rule1-strength'),rule2Strength=document.getElementById('rule2-strength'),rule3Strength=document.getElementById('rule3-strength'),outputYavas=document.getElementById('output-yavas'),outputOrta=document.getElementById('output-orta'),outputHizli=document.getElementById('output-hizli'),resultIndicator=document.getElementById('result-indicator'),fanSpeedResult=document.getElementById('fan-speed-result');
+                const tri=(x,a,b,c)=>Math.max(0,Math.min((x-a)/(b-a),(c-x)/(c-b))),trapL=(x,a,b)=>Math.max(0,Math.min(1,(b-x)/(b-a))),trapR=(x,a,b)=>Math.max(0,Math.min(1,(x-a)/(b-a)));
+                const tempMF={soguk:x=>trapL(x,0,20),ilik:x=>tri(x,10,20,30),sicak:x=>trapR(x,20,40)},humMF={kuru:x=>trapL(x,0,50),normal:x=>tri(x,25,50,75),nemli:x=>trapR(x,50,100)},fanRPM={yavas:25,orta:50,hizli:75};
+                function updateFuzzy1(){const temp=parseFloat(tempSlider.value),hum=parseFloat(humSlider.value);tempValue.textContent=temp.toFixed(0);humValue.textContent=hum.toFixed(0);tempIndicator.style.left=`${(temp/40)*100}%`;humIndicator.style.left=`${(hum/100)*100}%`;tempIndicator.querySelector('.indicator-value').textContent=`${temp.toFixed(0)}°C`;humIndicator.querySelector('.indicator-value').textContent=`${hum.toFixed(0)}%`;const tempMemberships={soguk:tempMF.soguk(temp),ilik:tempMF.ilik(temp),sicak:tempMF.sicak(temp)},humMemberships={kuru:humMF.kuru(hum),normal:humMF.normal(hum),nemli:humMF.nemli(hum)};tempMembershipText.innerHTML=`Soğuk: ${tempMemberships.soguk.toFixed(2)}, Ilık: ${tempMemberships.ilik.toFixed(2)}, Sıcak: ${tempMemberships.sicak.toFixed(2)}`;humMembershipText.innerHTML=`Kuru: ${humMemberships.kuru.toFixed(2)}, Normal: ${humMemberships.normal.toFixed(2)}, Nemli: ${humMemberships.nemli.toFixed(2)}`;const rule1=tempMemberships.soguk,rule2=tempMemberships.ilik,rule3=Math.max(tempMemberships.sicak,humMemberships.nemli);rule1Strength.textContent=rule1.toFixed(2);rule2Strength.textContent=rule2.toFixed(2);rule3Strength.textContent=rule3.toFixed(2);outputYavas.style.clipPath=`polygon(0% 100%,100% 100%,100% ${100-rule1*100}%,0% ${100-rule1*100}%)`;outputOrta.style.clipPath=`polygon(0% 100%,100% 100%,100% ${100-rule2*100}%,0% ${100-rule2*100}%)`;outputHizli.style.clipPath=`polygon(0% 100%,100% 100%,100% ${100-rule3*100}%,0% ${100-rule3*100}%)`;const totalActivation=rule1+rule2+rule3;let resultSpeed=fanRPM.orta;if(totalActivation>0){resultSpeed=((rule1*fanRPM.yavas)+(rule2*fanRPM.orta)+(rule3*fanRPM.hizli))/totalActivation;}fanSpeedResult.textContent=`${resultSpeed.toFixed(0)} RPM`;resultIndicator.style.left=`${resultSpeed}%`;resultIndicator.querySelector('.indicator-value').textContent=`${resultSpeed.toFixed(0)}`;}
+                tempSlider.addEventListener('input',updateFuzzy1);humSlider.addEventListener('input',updateFuzzy1);updateFuzzy1();
+            }
+
+            // ==== TERMOSTAT SİMÜLATÖRÜ ====
+            if (errSlider) {
+                const tri=(x,a,b,c)=>Math.max(0,Math.min((x-a)/(b-a),(c-x)/(c-b))),trapL=(x,a,b)=>Math.max(0,Math.min(1,(b-x)/(b-a))),trapR=(x,a,b)=>Math.max(0,Math.min(1,(x-a)/(b-a)));
+                const errValue=document.getElementById('err-value'),errIndicator=document.getElementById('err-indicator'),errMembershipText=document.getElementById('err-membership-text'),tRule1=document.getElementById('t-rule1'),tRule2=document.getElementById('t-rule2'),tRule3=document.getElementById('t-rule3'),tPowerResult=document.getElementById('t-power-result');
+                const errMF={negatif:x=>trapL(x,-10,-2),sifir:x=>tri(x,-5,0,5),pozitif:x=>trapR(x,2,10)},powerPct={dusuk:10,orta:50,yuksek:90};
+                function updateThermo(){const e=parseFloat(errSlider.value);errValue.textContent=e.toFixed(1);errIndicator.style.left=`${((e+10)/20)*100}%`;errIndicator.querySelector('.indicator-value').textContent=`${e.toFixed(1)}°C`;const m={negatif:errMF.negatif(e),sifir:errMF.sifir(e),pozitif:errMF.pozitif(e)};errMembershipText.innerHTML=`Negatif: ${m.negatif.toFixed(2)}, Sıfır: ${m.sifir.toFixed(2)}, Pozitif: ${m.pozitif.toFixed(2)}`;const w1=m.negatif,w2=m.sifir,w3=m.pozitif;tRule1.textContent=w1.toFixed(2);tRule2.textContent=w2.toFixed(2);tRule3.textContent=w3.toFixed(2);const total=w1+w2+w3;let result=powerPct.orta;if(total>0){result=(w1*powerPct.yuksek+w2*powerPct.orta+w3*powerPct.dusuk)/total;}tPowerResult.textContent=`${result.toFixed(0)}%`;}
+                errSlider.addEventListener('input',updateThermo);updateThermo();
+            }
+        });
+    </script>
+</body>
+</html>

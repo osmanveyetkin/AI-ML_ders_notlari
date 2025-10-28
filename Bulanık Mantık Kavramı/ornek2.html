@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gelişmiş Bulanık Mantık Kılavuzu: Risk Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display.swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+        .membership-graph { position: relative; width: 100%; height: 100px; background-color: #f8fafc; border-left: 2px solid #9ca3af; border-bottom: 2px solid #9ca3af; }
+        .membership-shape { position: absolute; bottom: 0; height: 100%; background-color: currentColor; opacity: 0.15; }
+        .indicator-line { position: absolute; bottom: 0; top: 0; width: 2px; background-color: #f43f5e; transform: translateX(-1px); transition: left 0.2s ease; }
+        .indicator-value { position: absolute; top: -25px; transform: translateX(-50%); background-color: #f43f5e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; white-space: nowrap; }
+        .clipped-shape { position: absolute; bottom: 0; background-color: currentColor; opacity: 0.5; transition: height 0.2s ease; }
+        .fade-in-section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .fade-in-section.is-visible { opacity: 1; transform: translateY(0); }
+        .interactive-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .interactive-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/90 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <h1 class="text-3xl font-extrabold text-indigo-600">Gelişmiş Bulanık Mantık Kılavuzu</h1>
+            <p class="mt-1 text-slate-600">Teori, Simülasyon ve Python ile Proje Risk Analizi</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section class="mb-16 fade-in-section">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200 interactive-card">
+                <h2 class="text-2xl font-bold mb-3 text-indigo-700">1. Bulanık Mantık Nedir?</h2>
+                <p>Bulanık Mantık, bilgisayarların "proje karmaşıklığı **oldukça yüksek**" veya "ekip deneyimi **fena değil**" gibi insani ve yoruma dayalı kavramları anlamasını sağlayan bir yaklaşımdır. Kesin 1/0'lar yerine, 0 ile 1 arasında değişen **üyelik dereceleri** kullanarak "gri alanları" yönetir.</p>
+            </div>
+        </section>
+
+        <section class="mb-16 fade-in-section">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200 interactive-card">
+                 <h2 class="text-2xl font-bold mb-6 text-indigo-700">2. Bir Bulanık Sistemin Anatomisi</h2>
+                 <div class="flex flex-col md:flex-row items-stretch justify-between gap-4 text-center">
+                    <div class="flex-1 p-6 bg-slate-50 rounded-lg border"><div class="text-5xl mb-2">🔢➡️🗣️</div><h4 class="text-lg font-bold">1. Bulanıklaştırma</h4><p class="text-sm text-slate-600 mt-2">Sayısal girdiler ("Ekip Deneyimi: 8/10") sözel ifadelere ("%25 Ortalama", "%75 Deneyimli") dönüştürülür.</p></div>
+                    <div class="text-2xl font-bold text-slate-400 self-center transform rotate-90 md:rotate-0 mx-4">→</div>
+                    <div class="flex-1 p-6 bg-slate-50 rounded-lg border"><div class="text-5xl mb-2">🧠</div><h4 class="text-lg font-bold">2. Kural Değerlendirme</h4><p class="text-sm text-slate-600 mt-2">"EĞER Proje Büyük VE Ekip Deneyimsiz ise, O ZAMAN Risk Yüksek'tir" gibi kurallar uygulanır.</p></div>
+                    <div class="text-2xl font-bold text-slate-400 self-center transform rotate-90 md:rotate-0 mx-4">→</div>
+                    <div class="flex-1 p-6 bg-slate-50 rounded-lg border"><div class="text-5xl mb-2">🗣️➡️🔢</div><h4 class="text-lg font-bold">3. Durulaştırma</h4><p class="text-sm text-slate-600 mt-2">Bulanık sonuçlar birleştirilerek net bir sayısal çıktı ("Proje Riski: %78") üretilir.</p></div>
+                 </div>
+            </div>
+        </section>
+        
+        <section class="mb-16 fade-in-section">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200 interactive-card">
+                <h2 class="text-2xl font-bold mb-2 text-indigo-700">3. Simülatör: Proje Risk Analizi</h2>
+                <p class="mb-6 text-slate-600">Proje değişkenlerini değiştirerek bulanık mantık sisteminin risk seviyesini nasıl hesapladığını gözlemleyin.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-2 space-y-4">
+                        <h3 class="font-bold text-xl">A. Girdiler</h3>
+                        <div><label for="p-size" class="font-semibold">Proje Büyüklüğü: <span id="p-size-val" class="font-mono text-indigo-600">50</span></label><input type="range" id="p-size" min="0" max="100" value="50" class="w-full mt-1"><div class="membership-graph mt-2"><div class="membership-shape text-green-500" style="width:50%;clip-path:polygon(0 100%,100% 100%,100% 0,0 0)"></div><div class="membership-shape text-yellow-500" style="width:50%;clip-path:polygon(50% 0,100% 100%,0 100%);left:25%"></div><div class="membership-shape text-red-500" style="width:50%;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);left:50%"></div><div id="p-size-ind" class="indicator-line"><div class="indicator-value"></div></div></div><p id="p-size-mem" class="text-xs font-mono mt-1"></p></div>
+                        <div><label for="p-complex" class="font-semibold">Teknik Karmaşıklık: <span id="p-complex-val" class="font-mono text-indigo-600">50</span></label><input type="range" id="p-complex" min="0" max="100" value="50" class="w-full mt-1"><div class="membership-graph mt-2"><div class="membership-shape text-green-500" style="width:50%;clip-path:polygon(0 100%,100% 100%,100% 0,0 0)"></div><div class="membership-shape text-yellow-500" style="width:50%;clip-path:polygon(50% 0,100% 100%,0 100%);left:25%"></div><div class="membership-shape text-red-500" style="width:50%;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);left:50%"></div><div id="p-complex-ind" class="indicator-line"><div class="indicator-value"></div></div></div><p id="p-complex-mem" class="text-xs font-mono mt-1"></p></div>
+                        <div><label for="p-exp" class="font-semibold">Ekip Deneyimi: <span id="p-exp-val" class="font-mono text-indigo-600">50</span></label><input type="range" id="p-exp" min="0" max="100" value="50" class="w-full mt-1"><div class="membership-graph mt-2"><div class="membership-shape text-red-500" style="width:50%;clip-path:polygon(0 100%,100% 100%,100% 0,0 0)"></div><div class="membership-shape text-yellow-500" style="width:50%;clip-path:polygon(50% 0,100% 100%,0 100%);left:25%"></div><div class="membership-shape text-green-500" style="width:50%;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);left:50%"></div><div id="p-exp-ind" class="indicator-line"><div class="indicator-value"></div></div></div><p id="p-exp-mem" class="text-xs font-mono mt-1"></p></div>
+                    </div>
+                    <div class="lg:col-span-3 space-y-4">
+                        <h3 class="font-bold text-xl">B. Kurallar ve Sonuç</h3>
+                        <div class="space-y-2 bg-slate-50 p-3 rounded-lg border text-xs"><div class="flex items-center gap-2"><b>K1:</b> EĞER Ekip Deneyimi <b class="text-green-600">Deneyimli</b> VEYA Proje Büyüklüğü <b class="text-green-600">Küçük</b> ise, Risk <b class="text-green-600">Düşük</b>'tür.<div id="rule1-val" class="ml-auto font-mono font-bold bg-slate-200 px-2 py-0.5 rounded"></div></div><div class="flex items-center gap-2"><b>K2:</b> EĞER Ekip Deneyimi <b class="text-yellow-600">Ortalama</b> ise, Risk <b class="text-yellow-600">Orta</b>'dır.<div id="rule2-val" class="ml-auto font-mono font-bold bg-slate-200 px-2 py-0.5 rounded"></div></div><div class="flex items-center gap-2"><b>K3:</b> EĞER Proje Büyüklüğü <b class="text-red-600">Büyük</b> VE Karmaşıklık <b class="text-red-600">Yüksek</b> ise, Risk <b class="text-red-600">Yüksek</b>'tir.<div id="rule3-val" class="ml-auto font-mono font-bold bg-slate-200 px-2 py-0.5 rounded"></div></div><div class="flex items-center gap-2"><b>K4:</b> EĞER Ekip Deneyimi <b class="text-red-600">Deneyimsiz</b> ise, Risk <b class="text-red-600">Yüksek</b>'tir.<div id="rule4-val" class="ml-auto font-mono font-bold bg-slate-200 px-2 py-0.5 rounded"></div></div></div>
+                        <div>
+                            <h4 class="font-semibold text-sm mb-1">C. Durulaştırma</h4>
+                            <div class="membership-graph"><div class="clipped-shape text-green-500" id="risk-low-out"></div><div class="clipped-shape text-yellow-500" id="risk-med-out"></div><div class="clipped-shape text-red-500" id="risk-high-out"></div><div id="risk-ind" class="indicator-line bg-indigo-600"><div class="indicator-value bg-indigo-600"></div></div></div>
+                            <div class="flex justify-between text-xs font-bold text-slate-500"><span>Düşük</span><span>Orta</span><span>Yüksek</span></div>
+                        </div>
+                        <div class="bg-indigo-50 p-6 rounded-lg border-2 border-indigo-200 text-center"><h4 class="font-bold text-lg text-indigo-800">Hesaplanan Risk Seviyesi</h4><p class="text-4xl font-bold text-indigo-600 mt-2" id="risk-result">50%</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="fade-in-section">
+             <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200 interactive-card">
+                 <h2 class="text-2xl font-bold mb-6 text-indigo-700">4. Python Kodu ve Simülasyonu</h2>
+                 <p class="mb-4 text-slate-600">Simülatörde gördüğümüz mantığı Python'da `scikit-fuzzy` kütüphanesi ile kodlayabiliriz.</p>
+                 <div class="mb-4"><h3 class="font-bold text-lg mb-2">Kurulum</h3><div class="bg-slate-800 text-white p-3 rounded-lg font-mono text-sm">pip install -U scikit-fuzzy</div></div>
+                 <h3 class="font-bold text-lg mb-2">Örnek Kod: Proje Risk Analizi</h3>
+                 <div class="bg-slate-800 text-white p-4 rounded-lg font-mono text-xs overflow-x-auto">
+<pre><code>import numpy as np
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+
+# Girdi ve Çıktı Değişkenlerini Tanımla
+size = ctrl.Antecedent(np.arange(0, 101, 1), 'size')
+complexity = ctrl.Antecedent(np.arange(0, 101, 1), 'complexity')
+experience = ctrl.Antecedent(np.arange(0, 101, 1), 'experience')
+risk = ctrl.Consequent(np.arange(0, 101, 1), 'risk')
+
+# Üyelik Fonksiyonları
+size['küçük'] = fuzz.trapmf(size.universe, [0, 0, 25, 50])
+size['orta'] = fuzz.trimf(size.universe, [25, 50, 75])
+size['büyük'] = fuzz.trapmf(size.universe, [50, 75, 100, 100])
+complexity.automf(names=['düşük', 'orta', 'yüksek'])
+experience['deneyimsiz'] = fuzz.trapmf(experience.universe, [0, 0, 25, 50])
+experience['ortalama'] = fuzz.trimf(experience.universe, [25, 50, 75])
+experience['deneyimli'] = fuzz.trapmf(experience.universe, [50, 75, 100, 100])
+risk.automf(names=['düşük', 'orta', 'yüksek'])
+
+# Kuralları Tanımla
+rule1 = ctrl.Rule(experience['deneyimli'] | size['küçük'], risk['düşük'])
+rule2 = ctrl.Rule(experience['ortalama'], risk['orta'])
+rule3 = ctrl.Rule(size['büyük'] & complexity['yüksek'], risk['yüksek'])
+rule4 = ctrl.Rule(experience['deneyimsiz'], risk['yüksek'])
+
+# Kontrol Sistemini Oluştur
+risk_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4])
+risk_sim = ctrl.ControlSystemSimulation(risk_ctrl)
+
+# --- Python Çıktı Simülasyonu ---
+# Girdi değerlerini aşağıdaki alana girerek bu kodun çıktısını simüle edin
+risk_sim.input['size'] = 50
+risk_sim.input['complexity'] = 50
+risk_sim.input['experience'] = 50
+
+risk_sim.compute()
+print(f"Hesaplanan Risk: {risk_sim.output['risk']:.2f}%")
+</code></pre>
+                 </div>
+                 <div class="mt-6 bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h3 class="font-bold text-lg mb-4">Python Kod Çıktısını Simüle Et</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+                        <div><label for="py-size" class="text-sm font-semibold">Proje Büyüklüğü (0-100)</label><input type="number" id="py-size" value="50" class="w-full mt-1 p-2 border rounded"></div>
+                        <div><label for="py-complex" class="text-sm font-semibold">Karmaşıklık (0-100)</label><input type="number" id="py-complex" value="50" class="w-full mt-1 p-2 border rounded"></div>
+                        <div><label for="py-exp" class="text-sm font-semibold">Deneyim (0-100)</label><input type="number" id="py-exp" value="50" class="w-full mt-1 p-2 border rounded"></div>
+                        <button id="py-sim-btn" class="w-full bg-indigo-600 text-white font-bold p-2 rounded-lg hover:bg-indigo-700">Simüle Et</button>
+                    </div>
+                    <div id="py-sim-result" class="mt-4 text-center bg-indigo-100 p-4 rounded-lg font-mono font-bold text-indigo-800 hidden"></div>
+                 </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animasyonlar
+            const sections = document.querySelectorAll('.fade-in-section');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(s => observer.observe(s));
+
+            // Simülatör 1: Risk Analizi
+            const p_size = document.getElementById('p-size'), p_complex = document.getElementById('p-complex'), p_exp = document.getElementById('p-exp');
+            if(p_size) {
+                const tri = (x, a, b, c) => Math.max(0, Math.min((x-a)/(b-a), (c-x)/(c-b)));
+                const trap = (x, a, b, c, d) => Math.max(0, Math.min((x-a)/(b-a), 1, (d-x)/(d-c)));
+
+                const mfs = {
+                    size: { küçük: x=>trap(x,0,0,25,50), orta: x=>tri(x,25,50,75), büyük: x=>trap(x,50,75,100,100) },
+                    complexity: { düşük: x=>trap(x,0,0,25,50), orta: x=>tri(x,25,50,75), yüksek: x=>trap(x,50,75,100,100) },
+                    experience: { deneyimsiz: x=>trap(x,0,0,25,50), ortalama: x=>tri(x,25,50,75), deneyimli: x=>trap(x,50,75,100,100) },
+                    risk: { düşük: x=>trap(x,0,0,25,50), orta: x=>tri(x,25,50,75), yüksek: x=>trap(x,50,75,100,100) }
+                };
+                const riskPoints = { düşük: 25, orta: 50, yüksek: 75 };
+
+                const updateSim = () => {
+                    const size = parseFloat(p_size.value), complex = parseFloat(p_complex.value), exp = parseFloat(p_exp.value);
+                    document.getElementById('p-size-val').textContent=size.toFixed(0); document.getElementById('p-complex-val').textContent=complex.toFixed(0); document.getElementById('p-exp-val').textContent=exp.toFixed(0);
+                    document.getElementById('p-size-ind').style.left=`${size}%`; document.getElementById('p-complex-ind').style.left=`${complex}%`; document.getElementById('p-exp-ind').style.left=`${exp}%`;
+                    document.getElementById('p-size-ind').querySelector('.indicator-value').textContent=size.toFixed(0); document.getElementById('p-complex-ind').querySelector('.indicator-value').textContent=complex.toFixed(0); document.getElementById('p-exp-ind').querySelector('.indicator-value').textContent=exp.toFixed(0);
+                    
+                    const mem = {
+                        size: { küçük: mfs.size.küçük(size), orta: mfs.size.orta(size), büyük: mfs.size.büyük(size) },
+                        complex: { düşük: mfs.complexity.düşük(complex), orta: mfs.complexity.orta(complex), yüksek: mfs.complexity.yüksek(complex) },
+                        exp: { deneyimsiz: mfs.experience.deneyimsiz(exp), ortalama: mfs.experience.ortalama(exp), deneyimli: mfs.experience.deneyimli(exp) }
+                    };
+                    document.getElementById('p-size-mem').textContent = `K:${mem.size.küçük.toFixed(2)} O:${mem.size.orta.toFixed(2)} B:${mem.size.büyük.toFixed(2)}`;
+                    document.getElementById('p-complex-mem').textContent = `D:${mem.complex.düşük.toFixed(2)} O:${mem.complex.orta.toFixed(2)} Y:${mem.complex.yüksek.toFixed(2)}`;
+                    document.getElementById('p-exp-mem').textContent = `Dz:${mem.exp.deneyimsiz.toFixed(2)} O:${mem.exp.ortalama.toFixed(2)} Dm:${mem.exp.deneyimli.toFixed(2)}`;
+
+                    const r1 = Math.max(mem.exp.deneyimli, mem.size.küçük);
+                    const r2 = mem.exp.ortalama;
+                    const r3 = Math.min(mem.size.büyük, mem.complex.yüksek);
+                    const r4 = mem.exp.deneyimsiz;
+
+                    const risk_low_act = r1, risk_med_act = r2, risk_high_act = Math.max(r3, r4);
+                    document.getElementById('rule1-val').textContent = r1.toFixed(2); document.getElementById('rule2-val').textContent = r2.toFixed(2); document.getElementById('rule3-val').textContent = r3.toFixed(2); document.getElementById('rule4-val').textContent = r4.toFixed(2);
+                    
+                    document.getElementById('risk-low-out').style.height = `${risk_low_act * 100}%`; document.getElementById('risk-med-out').style.height = `${risk_med_act * 100}%`; document.getElementById('risk-high-out').style.height = `${risk_high_act * 100}%`;
+                    
+                    const totalAct = risk_low_act + risk_med_act + risk_high_act;
+                    let result = riskPoints.orta;
+                    if(totalAct > 0) {
+                        result = (risk_low_act * riskPoints.düşük + risk_med_act * riskPoints.orta + risk_high_act * riskPoints.yüksek) / totalAct;
+                    }
+                    document.getElementById('risk-result').textContent = `${result.toFixed(1)}%`;
+                    document.getElementById('risk-ind').style.left = `${result}%`;
+                    document.getElementById('risk-ind').querySelector('.indicator-value').textContent = result.toFixed(1);
+                };
+                [p_size, p_complex, p_exp].forEach(el => el.addEventListener('input', updateSim));
+                updateSim();
+            }
+
+            // Python Kodu Simülasyonu
+            const pySimBtn = document.getElementById('py-sim-btn');
+            if(pySimBtn) {
+                pySimBtn.addEventListener('click', () => {
+                     const size = parseFloat(document.getElementById('py-size').value), complex = parseFloat(document.getElementById('py-complex').value), exp = parseFloat(document.getElementById('py-exp').value);
+                     const tri = (x, a, b, c) => Math.max(0, Math.min((x-a)/(b-a), (c-x)/(c-b)));
+                     const trap = (x, a, b, c, d) => Math.max(0, Math.min((x-a)/(b-a), 1, (d-x)/(d-c)));
+                     
+                     const r1 = Math.max(trap(exp, 50,75,100,100), trap(size, 0,0,25,50));
+                     const r2 = tri(exp, 25,50,75);
+                     const r3 = Math.min(trap(size,50,75,100,100), trap(complex,50,75,100,100));
+                     const r4 = trap(exp,0,0,25,50);
+                     const risk_low_act = r1, risk_med_act = r2, risk_high_act = Math.max(r3, r4);
+                     const totalAct = risk_low_act + risk_med_act + risk_high_act;
+                     let result = 50;
+                     if(totalAct > 0) {
+                        result = (risk_low_act * 25 + risk_med_act * 50 + risk_high_act * 75) / totalAct;
+                     }
+                     const resultEl = document.getElementById('py-sim-result');
+                     resultEl.textContent = `Hesaplanan Risk: ${result.toFixed(2)}%`;
+                     resultEl.classList.remove('hidden');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

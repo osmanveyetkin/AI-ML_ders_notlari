@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YSA: Teoriden Gerçek Hayata</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-sky-600">YSA Ders Notları</h1>
+                <nav class="hidden md:flex space-x-6 text-sm font-semibold">
+                    <a href="#giris" class="text-slate-600 hover:text-sky-600 transition-colors">Giriş</a>
+                    <a href="#perceptron" class="text-slate-600 hover:text-sky-600 transition-colors">Perceptron</a>
+                    <a href="#mlp" class="text-slate-600 hover:text-sky-600 transition-colors">Çok Katmanlı Ağ</a>
+                    <a href="#mantik" class="text-slate-600 hover:text-sky-600 transition-colors">Öğrenme Mantığı</a>
+                    <a href="#ozet" class="text-slate-600 hover:text-sky-600 transition-colors">Özet</a>
+                </nav>
+            </div>
+            <div class="flex justify-between items-center">
+                
+                <nav class="hidden md:flex space-x-6 text-sm font-semibold">
+                   <a href="baslangic.html" class="text-slate-600 hover:text-indigo-600 transition-colors">Ana Sayfa</a>
+                    <a href="genelyapi.html" class="text-slate-600 hover:text-indigo-600 transition-colors">Genel Yapı
+                       </a>
+                    <a href="ornek.html" class="text-slate-600 hover:text-indigo-600 transition-colors">XOR Simülatörü</a>
+                    <a href="#tanimlar" class="text-slate-600 hover:text-indigo-600 transition-colors">Tanımlar</a>
+                </nav>
+            </div>
+             </div>
+           
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Bölüm 0: Tanımlar (Kısa Sözlük) -->
+        <section id="tanimlar" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-extrabold mb-2 text-slate-900">0. Tanımlar (Kısa Sözlük)</h2>
+            <p class="text-lg text-slate-600 mb-6">Bu sayfada geçen temel kavramların kısa ve sınav-dostu açıklamaları. Gerektiğinde ders içinde referans olarak kullanabiliriz.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">🔵</span>Nöron (Yapay Nöron)</h3>
+                    <p class="text-slate-700 text-sm">Girdileri ağırlıklarla toplar, bias ekler ve aktivasyon fonksiyonundan geçirip çıktı üretir.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">⚖️</span>Ağırlık (Weight)</h3>
+                    <p class="text-slate-700 text-sm">Bir girdinin nöron çıktısına etkisinin katsayısı. Öğrenme boyunca güncellenir.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">➕</span>Bias</h3>
+                    <p class="text-slate-700 text-sm">Karar sınırını kaydıran sabit terim; yalnızca eğimi değiştirmekle kalmaz, konumu da ayarlar.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">🔀</span>Aktivasyon</h3>
+                    <p class="text-slate-700 text-sm">Doğrusal olmayanlık katar. Örn: <span class="font-mono">sigmoid</span> (0–1), <span class="font-mono">tanh</span> (−1–1), <span class="font-mono">ReLU</span> (negatifleri 0).</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">🧱</span>Katman</h3>
+                    <p class="text-slate-700 text-sm">Nöron grubu. Girdi → gizli katman(lar) → çıktı sırası ile bilgi akar.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">⚫</span>Perceptron</h3>
+                    <p class="text-slate-700 text-sm">Tek katmanlı doğrusal sınıflandırıcı. AND/OR gibi ayrılabilir problemleri çözer, XOR’u çözemez.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">🧠</span>MLP (Çok Katmanlı Ağ)</h3>
+                    <p class="text-slate-700 text-sm">En az bir gizli katmanı olan ağ; doğrusal olmayan desenleri (XOR vb.) öğrenebilir.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">➡️</span>İleri Yayılım</h3>
+                    <p class="text-slate-700 text-sm">Girdiden çıktıya doğru hesaplama: matris çarpımları + aktivasyonlar ile tahmin üretimi.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">⬅️</span>Geri Yayılım</h3>
+                    <p class="text-slate-700 text-sm">Hatanın zincir kuralıyla geriye taşınması ve ağırlık gradyanlarının hesaplanması.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">⛰️</span>Gradyan İnişi</h3>
+                    <p class="text-slate-700 text-sm">Kayıp fonksiyonunu azaltmak için gradyan yönünde küçük adımlarla ağırlıkları güncelleme.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">⚙️</span>Öğrenme Oranı (lr)</h3>
+                    <p class="text-slate-700 text-sm">Atılan adımın büyüklüğü. Büyük olursa kararsızlık, küçük olursa yavaş öğrenme görülür.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">🔁</span>Epoch / Batch Size</h3>
+                    <p class="text-slate-700 text-sm"><b>Epoch:</b> tüm verinin bir kez işlenmesi. <b>Batch:</b> her güncellemede kullanılan örnek sayısı.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">📉</span>Kayıp (Loss)</h3>
+                    <p class="text-slate-700 text-sm">Tahmin ile gerçek arasındaki farkın ölçüsü. Düşmesi, öğrenmenin iyileştiğini gösterir.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">🛡️</span>Düzenlileştirme (L1/L2)</h3>
+                    <p class="text-slate-700 text-sm">Ağırlıkları sınırlayarak aşırı uyumu (overfitting) azaltma tekniği.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">🎯</span>Aşırı Uyum / Az Uyum</h3>
+                    <p class="text-slate-700 text-sm"><b>Overfitting:</b> eğitime ezber. <b>Underfitting:</b> model çok basit, deseni yakalayamıyor.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-xl font-bold mb-2"><span class="mr-2">📈</span>Doğrusal / Doğrusal Olmayan</h3>
+                    <p class="text-slate-700 text-sm">Tek çizgiyle ayrılabilen vs. ayrılmayan problemler. XOR doğrusal olmayan bir örnektir.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Bölüm 1: Giriş -->
+        <section id="giris" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-extrabold mb-2 text-slate-900">1. Giriş: İki Simülasyon, Tek Hikaye</h2>
+            <p class="text-lg text-slate-600 mb-6">Bu dersin amacı, basit simülasyonlarda gördüğünüz temel prensiplerin, günümüzün karmaşık yapay zeka sistemlerinin arkasındaki mantığı nasıl oluşturduğunu anlamaktır.</p>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <p class="text-slate-700">İki temel simülasyonu inceledik: Basit, doğrusal bir problemi çözen **Perceptron (VE Kapısı)** ve daha karmaşık, doğrusal olmayan bir problemi çözen **Çok Katmanlı Ağ (XOR Kapısı)**. Şimdi bu basit mantık kapılarının modern yapay zeka ile olan derin bağlantısını keşfedeceğiz. Hikaye aynı, sadece ölçek çok daha büyük.</p>
+            </div>
+        </section>
+
+        <!-- Bölüm 2: Perceptron -->
+        <section id="perceptron" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-extrabold mb-2 text-slate-900">2. Perceptron: "Net Kararlar Veren Sınıflandırıcı"</h2>
+            <p class="text-lg text-slate-600 mb-6">Perceptron, verileri ayırmak için düz bir çizgi (Doğrusal Sınıflandırma) kullanır. Eğer bir problem, tek ve net bir kuralla çözülebiliyorsa, Perceptron mükemmel bir araçtır.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Örnek 1 -->
+                <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 flex items-center"><span class="text-2xl mr-3">📧</span>E-posta Spam Filtresi</h3>
+                        <p class="text-slate-600">En basit haliyle bir spam filtresi, Perceptron'un çalışma mantığına harika bir örnektir.</p>
+                    </div>
+                    <div id="ornek1-detay" class="px-6 pb-6 text-sm text-slate-700 bg-slate-50 border-t border-slate-200 hidden">
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><b>Girdiler:</b> E-postada "bedava", "kazandınız" gibi kelimeler geçiyor mu? (Evet: 1, Hayır: 0)</li>
+                            <li><b>Ağırlıklar:</b> Ağ, hangi kelimenin ne kadar "spam" göstergesi olduğunu öğrenir. "Bedava" kelimesinin ağırlığı yüksek olur.</li>
+                            <li><b>Karar:</b> Toplam puan belirli bir eşiği geçerse, e-posta "spam" olarak sınıflandırılır. Tıpkı çizginin bir tarafında kalması gibi.</li>
+                        </ul>
+                    </div>
+                    <button class="toggle-btn w-full text-left bg-slate-100 hover:bg-slate-200 p-3 text-sm font-semibold text-sky-700 transition-colors" data-target="ornek1-detay">
+                        <span class="flex justify-between items-center"><span>Daha Fazla Göster</span><span class="transform transition-transform">▼</span></span>
+                    </button>
+                </div>
+                <!-- Örnek 2 -->
+                <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 flex items-center"><span class="text-2xl mr-3">💳</span>Kredi Kartı Onayı</h3>
+                        <p class="text-slate-600">Basit bir kredi onayı sistemi, net kurallara dayalı bir sınıflandırma problemidir.</p>
+                    </div>
+                    <div id="ornek2-detay" class="px-6 pb-6 text-sm text-slate-700 bg-slate-50 border-t border-slate-200 hidden">
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><b>Girdiler:</b> Müşterinin geliri yeterli mi? Kredi puanı yüksek mi?</li>
+                            <li><b>Problem:</b> Bu durum, bizim simülasyondaki "VE" kapısı problemine çok benzer.</li>
+                            <li><b>Karar:</b> "Gelir Yüksek" VE "Kredi Puanı Yüksek" ise "Onayla", değilse "Reddet" gibi net bir karar verilir.</li>
+                        </ul>
+                    </div>
+                    <button class="toggle-btn w-full text-left bg-slate-100 hover:bg-slate-200 p-3 text-sm font-semibold text-sky-700 transition-colors" data-target="ornek2-detay">
+                        <span class="flex justify-between items-center"><span>Daha Fazla Göster</span><span class="transform transition-transform">▼</span></span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bölüm 3: Çok Katmanlı Ağ -->
+        <section id="mlp" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-extrabold mb-2 text-slate-900">3. Çok Katmanlı Ağ: "Karmaşık Desenleri Anlayan Uzman"</h2>
+            <p class="text-lg text-slate-600 mb-6">Bazen tek bir düz çizgi yetmez. **Gizli Katmanlar**, birden çok kuralı birleştirerek karmaşık, doğrusal olmayan problemleri çözmemizi sağlar.</p>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Örnek 3 -->
+                <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 flex items-center"><span class="text-2xl mr-3">🖼️</span>Görüntü Tanıma</h3>
+                        <p class="text-slate-600">Bir "kedi" fotoğrafını tanımanın tek bir basit kuralı yoktur. Bu, doğrusal olmayan bir problemdir.</p>
+                    </div>
+                    <div id="ornek3-detay" class="px-6 pb-6 text-sm text-slate-700 bg-slate-50 border-t border-slate-200 hidden">
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><b>İlk Katmanlar:</b> Kenarları, köşeleri ve renkleri, yani en temel özellikleri tanır.</li>
+                            <li><b>Orta Katmanlar:</b> Bu temel özellikleri birleştirerek göz, kulak, bıyık gibi daha karmaşık parçaları tanır.</li>
+                            <li><b>Çıkış Katmanı:</b> Tüm bu parçaların doğru kombinasyonunu gördüğünde "Bu bir kedidir!" kararını verir.</li>
+                        </ul>
+                    </div>
+                     <button class="toggle-btn w-full text-left bg-slate-100 hover:bg-slate-200 p-3 text-sm font-semibold text-sky-700 transition-colors" data-target="ornek3-detay">
+                        <span class="flex justify-between items-center"><span>Daha Fazla Göster</span><span class="transform transition-transform">▼</span></span>
+                    </button>
+                </div>
+                <!-- Örnek 4 -->
+                <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 flex items-center"><span class="text-2xl mr-3">🛡️</span>Dolandırıcılık Tespiti</h3>
+                        <p class="text-slate-600">Dolandırıcılık, birçok faktörün karmaşık birleşimiyle ortaya çıkar ve çok katmanlı ağ gerektirir.</p>
+                    </div>
+                    <div id="ornek4-detay" class="px-6 pb-6 text-sm text-slate-700 bg-slate-50 border-t border-slate-200 hidden">
+                        <p class="mt-4">Bir ağ, şu gibi karmaşık ve doğrusal olmayan ilişkileri öğrenmek zorundadır:</p>
+                        <p class="mt-2 font-mono text-xs bg-slate-200 p-3 rounded-md">"İşlem tutarı normalden yüksek <b class="text-sky-700">VE</b> işlem konumu normalden uzak <b class="text-sky-700">AMA</b> işlem saati normal."</p>
+                        <p class="mt-2">Bu türden onlarca kuralın birleşimi, bir işlemin dolandırıcılık olup olmadığını belirler.</p>
+                    </div>
+                    <button class="toggle-btn w-full text-left bg-slate-100 hover:bg-slate-200 p-3 text-sm font-semibold text-sky-700 transition-colors" data-target="ornek4-detay">
+                        <span class="flex justify-between items-center"><span>Daha Fazla Göster</span><span class="transform transition-transform">▼</span></span>
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Bölüm 4: Genel Mantık -->
+        <section id="mantik" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-extrabold mb-2 text-slate-900">4. Öğrenme Mantığı: "Kör Bir Dağcının Vadiyi Bulması"</h2>
+            <p class="text-lg text-slate-600 mb-6">Ağlar doğru ağırlıkları nasıl öğrenir? Bu süreç, Gradyan İnişi<b< adı verilen sezgisel bir yönteme dayanır.</p>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <div class="relative w-full h-64 bg-slate-100 rounded-lg flex items-center justify-center p-4">
+                    <svg viewBox="0 0 600 240" class="w-full h-full">
+                        <defs>
+                            <marker id="arrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+                                <path d="M0,0 L8,4 L0,8 Z" fill="#ef4444"></path>
+                            </marker>
+                            <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+                                <path d="M0,0 L8,4 L0,8 Z" fill="#22c55e"></path>
+                            </marker>
+                        </defs>
+                        <!-- Eksenler -->
+                        <line x1="30" y1="210" x2="580" y2="210" stroke="#94a3b8" stroke-width="2"></line>
+                        <line x1="30" y1="210" x2="30" y2="20" stroke="#94a3b8" stroke-width="2"></line>
+                        <text x="585" y="220" font-size="12" fill="#475569">w</text>
+                        <text x="20" y="20" font-size="12" fill="#475569">L(w)</text>
+
+                        <!-- Kayıp eğrisi (konveks parabola) -->
+                        <path d="M20,200 Q300,20 580,200" fill="none" stroke="#0ea5e9" stroke-width="3"></path>
+
+                        <!-- Minimum nokta -->
+                        <circle cx="300" cy="40" r="4" fill="#0ea5e9"></circle>
+                        <text x="310" y="50" font-size="12" fill="#0369a1">Minimum (w*)</text>
+
+                        <!-- Mevcut nokta ve adımlar -->
+                        <circle cx="180" cy="110" r="6" fill="#1f2937"></circle>
+                        <text x="190" y="105" font-size="12" fill="#0f172a">wₜ</text>
+
+                        <!-- Gradyan (yukarı yön: artış yönü) -->
+                        <line x1="180" y1="110" x2="180" y2="80" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow)"></line>
+                        <text x="186" y="90" font-size="12" fill="#ef4444">∇L(wₜ)</text>
+
+                        <!-- Öğrenme adımı (negatif gradyan yönünde) -->
+                        <line x1="180" y1="110" x2="140" y2="130" stroke="#22c55e" stroke-width="3" marker-end="url(#arrow-green)"></line>
+                        <text x="140" y="145" font-size="12" fill="#16a34a">−η · ∇L(wₜ)</text>
+
+                        <!-- Bir sonraki nokta (örnek) -->
+                        <circle cx="140" cy="130" r="5" fill="#22c55e"></circle>
+                        <text x="120" y="125" font-size="12" fill="#065f46">wₜ₊₁</text>
+                    </svg>
+                </div>
+                <!-- Öğrenciye Yönelik Kısa Açıklama -->
+                <div class="mt-6 bg-sky-50 border-l-4 border-sky-400 p-4 rounded-r-lg text-sm">
+                    <h4 class="font-bold mb-1">Kısaca Ne Oluyor?</h4>
+                    <ol class="list-decimal list-inside text-slate-700 space-y-1">
+                        <li><b>Durum:</b> Tepe-çukur gibi bir arazideyiz; yükseklik = <span class="font-mono">L(w)</span> (hata).</li>
+                        <li><b>Kontrol:</b> Etrafı yoklayıp <span class="font-mono">∇L(w)</span> yani <i>eğim</i> yönünü buluyoruz (kırmızı ok yukarıyı gösterir).</li>
+                        <li><b>Adım:</b> Yukarıya değil, <b>tam tersi yöne</b> (−η·∇L) küçük bir adım atıyoruz (yeşil ok).</li>
+                        <li><b>Tekrar:</b> Aynı işlemi defalarca yapınca adımlar küçülür ve <b>vadinin dibine</b> (minimuma) yaklaşırız.</li>
+                    </ol>
+                    <p class="mt-2 text-slate-600">Kör dağcı benzetmesi: Dağcı görü mezunu kullanmaz; ayağının altındaki eğimi hisseder ve her seferinde yokuş aşağı küçük bir adım atar.</p>
+                </div>
+                <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-slate-50 p-4 rounded-lg">
+                        <h4 class="font-bold">Amaç</h4>
+                        <p class="text-slate-600">Vadinin en alçak noktasına (minimum hata) inmek.</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg">
+                        <h4 class="font-bold">Geri Yayılım</h4>
+                        <p class="text-slate-600">Dağcının, ayağının altındaki zeminin "eğimini hesaplama" işlemidir.</p>
+                    </div>
+                     <div class="bg-slate-50 p-4 rounded-lg">
+                        <h4 class="font-bold">Öğrenme Oranı</h4>
+                        <p class="text-slate-600">Dağcının her seferinde attığı adımın büyüklüğüdür.</p>
+                    </div>
+                     <div class="bg-slate-50 p-4 rounded-lg">
+                        <h4 class="font-bold">Eğitim</h4>
+                        <p class="text-slate-600">Sürekli eğimi kontrol edip küçük adımlarla yokuş aşağı inme sürecidir.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bölüm 5: Özet -->
+        <section id="ozet" class="scroll-mt-24">
+             <h2 class="text-3xl font-extrabold mb-2 text-slate-900">5. Özet ve Sonuç</h2>
+             <p class="text-lg text-slate-600 mb-6">Modern yapay zeka modelleri, bu temel prensiplerin devasa ölçekte büyütülmüş halidir. Temeli anladıysanız, modern yapay zekanın ruhunu kavramışsınız demektir.</p>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg border-2 border-sky-200">
+                    <h3 class="text-2xl font-bold text-sky-700 mb-4">Perceptron 🛠️</h3>
+                    <p class="text-slate-700">Basit, tek kuralla çözülen "doğrusal" problemler içindir.</p>
+                    <p class="mt-4 text-lg font-semibold bg-sky-100 text-sky-800 p-4 rounded-lg text-center">Elindeki tek alet bir <b class="underline">cetveldir</b>.</p>
+                </div>
+                 <div class="bg-white p-8 rounded-xl shadow-lg border-2 border-indigo-200">
+                    <h3 class="text-2xl font-bold text-indigo-700 mb-4">Çok Katmanlı Ağ 🧠</h3>
+                    <p class="text-slate-700">Karmaşık, birden çok kuralın birleşimini gerektiren "doğrusal olmayan" problemler içindir.</p>
+                    <p class="mt-4 text-lg font-semibold bg-indigo-100 text-indigo-800 p-4 rounded-lg text-center">Elinde <b class="underline">birden çok cetvel</b> vardır ve bunlarla karmaşık şekiller çizebilir.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButtons = document.querySelectorAll('.toggle-btn');
+
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+                    const icon = button.querySelector('span > span:last-child');
+                    const text = button.querySelector('span > span:first-child');
+
+                    if (targetElement) {
+                        const isHidden = targetElement.classList.contains('hidden');
+                        if(isHidden) {
+                            targetElement.classList.remove('hidden');
+                            icon.classList.add('rotate-180');
+                            text.textContent = 'Daha Az Göster';
+                        } else {
+                            targetElement.classList.add('hidden');
+                            icon.classList.remove('rotate-180');
+                            text.textContent = 'Daha Fazla Göster';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
